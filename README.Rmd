@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 
 This package re-implements selected pointwise confidence intervals and simultaneous confidence bands for Kaplan–Meier survival estimates from the the `km.ci` package and from the work of [Sachs, Brand, and Gabriel](https://doi.org/10.1038/s41416-022-01920-5) for improved performance. Differences compared to `km.ci` include:
 
-* Nair confidence bands allows arbitrary confidence levels rather than being restricted to pre-computed tables of $e_\alpha$ critical values. 
+* Nair confidence bands allows arbitrary confidence levels rather than being restricted to pre-computed tables of critical values. 
 
 * Thomas–Grunkemeier confidence intervals maintain numerical stability at extremely small $\alpha$ values that may arise during the construction of Hollander–McKeague confidence bands.
 

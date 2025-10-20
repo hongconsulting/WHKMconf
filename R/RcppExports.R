@@ -131,7 +131,7 @@ WH_e_alpha <- function(lower, upper, alpha, tol = 1e-10, maxit = 10000L) {
 #' @param seed Random seed. Default = `24601`.
 #' @details
 #' Parallelized using OpenMP if available.
-#' @return The critical value \eqn{e_\alpha}.
+#' @return The critical value *e*.
 #' @references
 #' 1. Nair, V.N., 1984. Conﬁdence bands for survival functions with censored
 #' data: a comparative study. *Technometrics*, 26, pp. 265–275.

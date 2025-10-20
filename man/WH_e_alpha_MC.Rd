@@ -28,7 +28,7 @@ Brownian bridge. Default = \code{1e5}.}
 \item{seed}{Random seed. Default = \code{24601}.}
 }
 \value{
-The critical value \eqn{e_\alpha}.
+The critical value \emph{e}.
 }
 \description{
 Computes the critical value \emph{e} for Nair's equal-precision confidence bands¹
