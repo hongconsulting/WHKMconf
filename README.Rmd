@@ -53,7 +53,6 @@ CI.HM <- data.frame(WH_HollanderMcKeague(s$time, s$n.risk, s$n.event))
 CI <- cbind(CI, setNames(CI.HM, c("HMl", "HMu")))
 
 t_max <- max(data$time * 12/365.2425)
-t_eventmax <- max(data$time[data$status==1] * 12/365.2425)
 if (max(CI$time) < t_max) {
   CI <- rbind(CI, tail(CI, 1))
   CI$time[nrow(CI)] <- t_max
@@ -67,10 +66,8 @@ lines(y = CI$Rl, x = CI$time, type = "s", lty = 1, col = grDevices::rgb(1, 0, 0)
 lines(y = CI$Ru, x = CI$time, type = "s", lty = 1, col = grDevices::rgb(1, 0, 0))
 lines(y = CI$TGl, x = CI$time, type = "s", lty = 1, col = grDevices::rgb(1, 0.75, 0))
 lines(y = CI$TGu, x = CI$time, type = "s", lty = 1, col = grDevices::rgb(1, 0.75, 0))
-clip(x1 = 0, y1 = 0, x2 = t_eventmax + 0.05, y2 = 1)
 lines(y = CI$Nl, x = CI$time, type = "s", lty = 2, col = grDevices::rgb(0, 0.75, 0))
 lines(y = CI$Nu, x = CI$time, type = "s", lty = 2, col = grDevices::rgb(0, 0.75, 0))
-clip(x1 = 0, y1 = 0, x2 = t_max, y2 = 1)
 lines(y = CI$HMl, x = CI$time, type = "s", lty = 2, col = grDevices::rgb(0, 0, 1))
 lines(y = CI$HMu, x = CI$time, type = "s", lty = 2, col = grDevices::rgb(0, 0, 1))
 legend(legend = c("Rothman", "Thomas\u2013Grunkemeier", "Nair", "Hollander\u2013McKeague"),
