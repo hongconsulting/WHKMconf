@@ -52,7 +52,7 @@
 <!-- badges: end -->
 <p>This package re-implements selected pointwise confidence intervals and simultaneous confidence bands for Kaplan–Meier survival estimates from the the <code>km.ci</code> package and from the work of <a href="https://doi.org/10.1038/s41416-022-01920-5" class="external-link">Sachs, Brand, and Gabriel</a> for improved performance. Differences compared to <code>km.ci</code> include:</p>
 <ul>
-<li><p>Nair confidence bands allows arbitrary confidence levels rather than being restricted to pre-computed tables of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>e</mi><annotation encoding="application/x-tex">e</annotation></semantics></math> critical values.</p></li>
+<li><p>Nair confidence bands allows arbitrary confidence levels rather than being restricted to pre-computed tables of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>e</mi><mi>α</mi></msub><annotation encoding="application/x-tex">e_\alpha</annotation></semantics></math> critical values.</p></li>
 <li><p>Thomas–Grunkemeier confidence intervals maintain numerical stability at extremely small <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>α</mi><annotation encoding="application/x-tex">\alpha</annotation></semantics></math> values that may arise during the construction of Hollander–McKeague confidence bands.</p></li>
 </ul>
 <p>‘WH’ code is designed to maximise speed, for use in simulation studies. As such, input validation is minimal and the user is responsible for ensuring valid use.</p>

@@ -2,7 +2,7 @@ pandoc: '3.2'
 pkgdown: 2.1.3
 pkgdown_sha: ~
 articles: {}
-last_built: 2025-10-20T08:58Z
+last_built: 2025-10-20T09:00Z
 urls:
   reference: https://hongconsulting.github.io/WHKMconf/reference
   article: https://hongconsulting.github.io/WHKMconf/articles
