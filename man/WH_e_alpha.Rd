@@ -13,15 +13,15 @@ WH_e_alpha(lower, upper, alpha, tol = 1e-10, maxit = 10000L)
 
 \item{alpha}{Significance level.}
 
-\item{tol}{Convergence tolerance. Default = \code{1e-10}.}
+\item{tol}{Optional convergence tolerance. Default = \code{1e-10}.}
 
-\item{maxit}{Maximum number of iterations. Default = \code{10000}.}
+\item{maxit}{Optional maximum number of iterations. Default = \code{10000}.}
 }
 \value{
-The critical value \emph{e}.
+The critical value \ifelse{latex}{\out{$\mathit{e}_{\mathit{\alpha}}$}}{\ifelse{html}{\out{<i>e</i><sub><i>&alpha;</i></sub>}}{*e_alpha*}}.
 }
 \description{
-Computes the critical value \emph{e} for Nair's equal-precision confidence bands¹
+Computes the critical value \ifelse{latex}{\out{$\mathit{e}_{\mathit{\alpha}}$}}{\ifelse{html}{\out{<i>e</i><sub><i>&alpha;</i></sub>}}{*e_alpha*}} for Nair's equal-precision confidence bands¹
 using Borokov–Sycheva approximation². Note: to reproduce Table 2 of Nair
 (1984), use \code{alpha/2}.
 }

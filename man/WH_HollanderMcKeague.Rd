@@ -9,7 +9,7 @@ WH_HollanderMcKeague(
   risk,
   event,
   alpha = 0.05,
-  warn = TRUE,
+  verbose = TRUE,
   tol_G = 1e-10,
   maxit_G = 10000L,
   tol_K = 1e-10,
@@ -23,13 +23,13 @@ WH_HollanderMcKeague(
 
 \item{event}{Integer vector of numbers of events at each \code{time}.}
 
-\item{alpha}{Significance level. Default = \code{0.05}.}
+\item{alpha}{Optional significance level. Default = \code{0.05}.}
 
-\item{warn}{Logical; if \code{TRUE}, prints a message if the \emph{pointwise α} is
-rounded up.}
+\item{verbose}{Optional logical; if \code{TRUE}, prints additional diagnostic
+information. Default = \code{TRUE}.}
 
 \item{tol_G}{Optional convergence tolerance for the infinite series
-computing the Hall–Wellner distribution function \emph{G}(\emph{a}, \emph{λ}). Default =
+computing the Hall–Wellner² distribution function \emph{G}(\emph{a}, \emph{λ}). Default =
 \code{1e-10}.}
 
 \item{maxit_G}{Optional maximum number of iterations for the infinite series
@@ -48,12 +48,21 @@ A numeric matrix with 2 columns: lower limit and upper limit.
 }
 \description{
 Computes the Hollander–McKeague likelihood-ratio simultaneous confidence
-band for the Kaplan–Meier survival estimator at each unique event time.
+band¹ for the Kaplan–Meier survival estimator at each unique event time.
 }
 \details{
-The Hollander–McKeague procedure begins with a specified \emph{simultaneous α} and
-computes a smaller \emph{pointwise α} such that the resulting \emph{pointwise} confidence
+The Hollander–McKeague procedure begins with a specified \emph{simultaneous} \ifelse{latex}{\out{$\mathit{\alpha}$}}{\ifelse{html}{\out{<i>&alpha;</i>}}{*alpha*}} and
+computes a smaller \emph{pointwise} \ifelse{latex}{\out{$\mathit{\alpha}$}}{\ifelse{html}{\out{<i>&alpha;</i>}}{*alpha*}} such that the resulting \emph{pointwise} confidence
 intervals achieve the desired \emph{simultaneous} coverage. Extremely small
-\emph{pointwise α} can cause 1 − \emph{α} to round to 1 in double precision. To prevent
-this, \emph{pointwise α} is rounded up to at least half the machine epsilon.
+\emph{pointwise} \ifelse{latex}{\out{$\mathit{\alpha}$}}{\ifelse{html}{\out{<i>&alpha;</i>}}{*alpha*}} can cause 1 − \ifelse{latex}{\out{$\mathit{\alpha}$}}{\ifelse{html}{\out{<i>&alpha;</i>}}{*alpha*}} to round to 1 in double precision. To prevent
+this, \emph{pointwise} \ifelse{latex}{\out{$\mathit{\alpha}$}}{\ifelse{html}{\out{<i>&alpha;</i>}}{*alpha*}} is rounded up to at least half the machine epsilon.
+}
+\references{
+\enumerate{
+\item Hollander, M. and McKeague, I.W., 1997. Likelihood ratio-based confidence
+bands for survival functions. \emph{Journal of the American Statistical
+Association}, 92(437), pp. 215–226.
+\item Hall, W.J. and Wellner, J.A., 1980. Confidence bands for a survival curve
+from censored data. \emph{Biometrika}, 67(1), pp. 133–143.
+}
 }

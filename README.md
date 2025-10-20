@@ -8,12 +8,13 @@
 
 This package re-implements selected pointwise confidence intervals and
 simultaneous confidence bands for Kaplan–Meier survival estimates from
-the the `km.ci` package and from the work of [Sachs, Brand, and
-Gabriel](https://doi.org/10.1038/s41416-022-01920-5) for improved
+the the `km.ci` package and from the work of [Sachs, Brand, and Gabriel
+(2022)](https://doi.org/10.1038/s41416-022-01920-5) for improved
 performance. Differences compared to `km.ci` include:
 
 - Nair confidence bands allows arbitrary confidence levels rather than
-  being restricted to pre-computed tables of critical values.
+  being restricted to pre-computed tables of $e_{\alpha}$ critical
+  values.
 
 - Thomas–Grunkemeier confidence intervals maintain numerical stability
   at extremely small $\alpha$ values that may arise during the
@@ -47,6 +48,7 @@ CI <- cbind(CI, setNames(CI.R, c("Rl", "Ru")))
 CI.TG <- data.frame(WH_ThomasGrunkemeier(s$time, s$n.risk, s$n.event))
 CI <- cbind(CI, setNames(CI.TG, c("TGl", "TGu")))
 CI.N <- data.frame(WH_Nair(s$time, s$surv, s$std.err, s$n.risk, s$n.event))
+#> [WH_Nair] lower = 0.0384615, upper = 0.537895
 CI <- cbind(CI, setNames(CI.N, c("Nl", "Nu")))
 CI.HM <- data.frame(WH_HollanderMcKeague(s$time, s$n.risk, s$n.event))
 CI <- cbind(CI, setNames(CI.HM, c("HMl", "HMu")))

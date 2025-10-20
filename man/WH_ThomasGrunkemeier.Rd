@@ -19,6 +19,13 @@ WH_ThomasGrunkemeier(time, risk, event, alpha = 0.05)
 A numeric matrix with 2 columns: lower limit and upper limit.
 }
 \description{
-Computes Thomas–Grunkemeier likelihood-ratio pointwise confidence intervals
+Computes Thomas–Grunkemeier likelihood-ratio pointwise confidence intervals¹
 for the Kaplan–Meier survival estimator at each unique event time.
+}
+\references{
+\enumerate{
+\item Thomas, D.R. and Grunkemeier, G.L., 1975. Confidence interval estimation
+of survival probabilities for censored data. \emph{Journal of the American
+Statistical Association}, 70(352), pp. 865–871.
+}
 }

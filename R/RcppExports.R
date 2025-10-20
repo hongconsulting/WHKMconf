@@ -6,20 +6,34 @@
 #' Computes the Nair's log-transformed equal-precision simultaneous confidence
 #' band¹ for the Kaplan–Meier survival estimator at each unique event time.
 #' @param time Numeric vector of unique event times.
-#' @param surv Numeric vector of Kaplan–Meier survival probabilities at each
-#' `time`.
+#' @param surv Numeric vector of Kaplan–Meier survival estimates at each `time`.
 #' @param SE Numeric vector of standard errors for each `surv`.
 #' @param risk Integer vector of numbers at risk at each `time`.
 #' @param event Integer vector of numbers of events at each `time`.
-#' @param alpha Significance level. Default = `0.05`.
-#' @param e_override Optional numeric value overriding the critical value *e*.
+#' @param alpha Optional significance level. Default = `0.05`.
+#' @param verbose Optional logical; if `TRUE`, prints additional diagnostic
+#' information. Default = `TRUE`.
+#' @param tol Optional convergence tolerance for the Borokov–Sycheva
+#' approximation. Default = `1e-10`.
+#' @param maxit Optional maximum number of iterations for the Borokov–Sycheva
+#' approximation. Default = `10000`.
+#' @param adapt Optional logical; if `TRUE`, computation of \ifelse{latex}{\out{$\mathit{e}_{\mathit{\alpha}}$}}{\ifelse{html}{\out{<i>e</i><sub><i>&alpha;</i></sub>}}{*e_alpha*}} automatically
+#' falls back to the Monte Carlo method if the Borokov–Sycheva approximation
+#' fails to converge. Default = `TRUE`.
+#' @param MC_step Optional number of variance-stabilized Brownian bridge
+#' discretization steps for the Monte Carlo fallback. Default = `1e5`.
+#' @param MC_rep Optional number of replicates for the Monte Carlo fallback.
+#' Default = `1e5`.
+#' @param MC_seed Optional random seed for the Monte Carlo fallback. Default =
+#' `24601`.
+#' @param e_override Optional numeric value overriding the critical value \ifelse{latex}{\out{$\mathit{e}_{\mathit{\alpha}}$}}{\ifelse{html}{\out{<i>e</i><sub><i>&alpha;</i></sub>}}{*e_alpha*}}.
 #' @return A numeric matrix with 2 columns: lower limit and upper limit.
 #' @details
-#' The equal-precision critical value *e* is calculated using Borokov–Sycheva
+#' The equal-precision critical value \ifelse{latex}{\out{$\mathit{e}_{\mathit{\alpha}}$}}{\ifelse{html}{\out{<i>e</i><sub><i>&alpha;</i></sub>}}{*e_alpha*}} is calculated using Borokov–Sycheva
 #' approximation² (`WH_e_alpha()`). This method aligns more closely with
-#' Monte Carlo simulations using 100 000 Brownian bridge discretization steps
-#' and 100 000 replicates (`WH_e_alpha_MC()`) compared to the pre-computed tables
-#' published in Klein & Moeschberger (2003)³.
+#' Monte Carlo simulations using 100,000 Brownian bridge discretization steps
+#' and 100,000 replicates (`WH_e_alpha_MC()`) compared to the pre-computed tables
+#' published in Klein and Moeschberger (2003)³.
 #' @references
 #' 1. Nair, V.N., 1984. Conﬁdence bands for survival functions with censored
 #' data: a comparative study. *Technometrics*, 26, pp. 265–275.
@@ -30,19 +44,23 @@
 #' In *Survival Analysis: Techniques for Censored and Truncated Data*, pp.
 #' 455–482. New York: Springer New York.
 #' @export
-WH_Nair <- function(time, surv, SE, risk, event, alpha = 0.05, e_override = 0.0) {
-    .Call(`_WHKMconf_WH_Nair`, time, surv, SE, risk, event, alpha, e_override)
+WH_Nair <- function(time, surv, SE, risk, event, alpha = 0.05, verbose = TRUE, tol = 1e-10, maxit = 10000L, adapt = TRUE, MC_step = 1e5L, MC_rep = 1e5L, MC_seed = 24601L, e_override = 0.0) {
+    .Call(`_WHKMconf_WH_Nair`, time, surv, SE, risk, event, alpha, verbose, tol, maxit, adapt, MC_step, MC_rep, MC_seed, e_override)
 }
 
 #' Rothman confidence intervals
 #'
-#' Computes Rothman binomial pointwise confidence intervals for the
+#' Computes Rothman binomial pointwise confidence intervals¹ for the
 #' Kaplan–Meier survival estimator at each unique event time.
 #' @param surv Numeric vector of Kaplan–Meier survival probabilities.
 #' @param risk Integer vector of numbers at risk at each change in `surv`.
 #' @param event Integer vector of event counts at each change in `surv`.
 #' @param alpha Significance level. Default = `0.05`.
 #' @return A numeric matrix with 2 columns: lower limit and upper limit.
+#' @references
+#' 1. Rothman, K.J., 1978. Estimation of confidence limits for the cumulative
+#' probability of survival in life table analysis. *Journal of Chronic Diseases*,
+#' 31(8), pp. 557–560.
 #' @export
 WH_Rothman <- function(surv, risk, event, alpha = 0.05) {
     .Call(`_WHKMconf_WH_Rothman`, surv, risk, event, alpha)
@@ -50,13 +68,17 @@ WH_Rothman <- function(surv, risk, event, alpha = 0.05) {
 
 #' Thomas–Grunkemeier confidence intervals
 #'
-#' Computes Thomas–Grunkemeier likelihood-ratio pointwise confidence intervals
+#' Computes Thomas–Grunkemeier likelihood-ratio pointwise confidence intervals¹
 #' for the Kaplan–Meier survival estimator at each unique event time.
 #' @param time Numeric vector of unique event times.
 #' @param risk Integer vector of numbers at risk at each `time`.
 #' @param event Integer vector of numbers of events at each `time`.
 #' @param alpha Significance level. Default = `0.05`.
 #' @return A numeric matrix with 2 columns: lower limit and upper limit.
+#' @references
+#' 1. Thomas, D.R. and Grunkemeier, G.L., 1975. Confidence interval estimation
+#' of survival probabilities for censored data. *Journal of the American
+#' Statistical Association*, 70(352), pp. 865–871.
 #' @export
 WH_ThomasGrunkemeier <- function(time, risk, event, alpha = 0.05) {
     .Call(`_WHKMconf_WH_ThomasGrunkemeier`, time, risk, event, alpha)
@@ -65,15 +87,15 @@ WH_ThomasGrunkemeier <- function(time, risk, event, alpha = 0.05) {
 #' Hollander–McKeague confidence bands
 #'
 #' Computes the Hollander–McKeague likelihood-ratio simultaneous confidence
-#' band for the Kaplan–Meier survival estimator at each unique event time.
+#' band¹ for the Kaplan–Meier survival estimator at each unique event time.
 #' @param time Numeric vector of unique event times.
 #' @param risk Integer vector of numbers at risk at each `time`.
 #' @param event Integer vector of numbers of events at each `time`.
-#' @param alpha Significance level. Default = `0.05`.
-#' @param warn Logical; if `TRUE`, prints a message if the *pointwise α* is
-#' rounded up.
+#' @param alpha Optional significance level. Default = `0.05`.
+#' @param verbose Optional logical; if `TRUE`, prints additional diagnostic
+#' information. Default = `TRUE`.
 #' @param tol_G Optional convergence tolerance for the infinite series
-#' computing the Hall–Wellner distribution function *G*(*a*, *λ*). Default =
+#' computing the Hall–Wellner² distribution function *G*(*a*, *λ*). Default =
 #' `1e-10`.
 #' @param maxit_G Optional maximum number of iterations for the infinite series
 #' computing the Hall–Wellner distribution function *G*(*a*, *λ*). Default =
@@ -85,27 +107,64 @@ WH_ThomasGrunkemeier <- function(time, risk, event, alpha = 0.05) {
 #' `10000`.
 #' @return A numeric matrix with 2 columns: lower limit and upper limit.
 #' @details
-#' The Hollander–McKeague procedure begins with a specified *simultaneous α* and
-#' computes a smaller *pointwise α* such that the resulting *pointwise* confidence
+#' The Hollander–McKeague procedure begins with a specified *simultaneous* \ifelse{latex}{\out{$\mathit{\alpha}$}}{\ifelse{html}{\out{<i>&alpha;</i>}}{*alpha*}} and
+#' computes a smaller *pointwise* \ifelse{latex}{\out{$\mathit{\alpha}$}}{\ifelse{html}{\out{<i>&alpha;</i>}}{*alpha*}} such that the resulting *pointwise* confidence
 #' intervals achieve the desired *simultaneous* coverage. Extremely small
-#' *pointwise α* can cause 1 − *α* to round to 1 in double precision. To prevent
-#' this, *pointwise α* is rounded up to at least half the machine epsilon.
+#' *pointwise* \ifelse{latex}{\out{$\mathit{\alpha}$}}{\ifelse{html}{\out{<i>&alpha;</i>}}{*alpha*}} can cause 1 − \ifelse{latex}{\out{$\mathit{\alpha}$}}{\ifelse{html}{\out{<i>&alpha;</i>}}{*alpha*}} to round to 1 in double precision. To prevent
+#' this, *pointwise* \ifelse{latex}{\out{$\mathit{\alpha}$}}{\ifelse{html}{\out{<i>&alpha;</i>}}{*alpha*}} is rounded up to at least half the machine epsilon.
+#' @references
+#' 1. Hollander, M. and McKeague, I.W., 1997. Likelihood ratio-based confidence
+#' bands for survival functions. *Journal of the American Statistical
+#' Association*, 92(437), pp. 215–226.
+#' 2. Hall, W.J. and Wellner, J.A., 1980. Confidence bands for a survival curve
+#' from censored data. *Biometrika*, 67(1), pp. 133–143.
 #' @export
-WH_HollanderMcKeague <- function(time, risk, event, alpha = 0.05, warn = TRUE, tol_G = 1e-10, maxit_G = 10000L, tol_K = 1e-10, maxit_K = 10000L) {
-    .Call(`_WHKMconf_WH_HollanderMcKeague`, time, risk, event, alpha, warn, tol_G, maxit_G, tol_K, maxit_K)
+WH_HollanderMcKeague <- function(time, risk, event, alpha = 0.05, verbose = TRUE, tol_G = 1e-10, maxit_G = 10000L, tol_K = 1e-10, maxit_K = 10000L) {
+    .Call(`_WHKMconf_WH_HollanderMcKeague`, time, risk, event, alpha, verbose, tol_G, maxit_G, tol_K, maxit_K)
+}
+
+#' Hollander–McKeague simultaneous significance level
+#'
+#' Computes the *simultaneous* \ifelse{latex}{\out{$\mathit{\alpha}$}}{\ifelse{html}{\out{<i>&alpha;</i>}}{*alpha*}} for Hollander–McKeague confidence bands.
+#' @param risk Integer vector of numbers at risk at each unique event time.
+#' @param event Integer vector of numbers of events at each unique event time.
+#' @param surv Numeric vector of Kaplan–Meier survival estimates at each unique
+#' event time.`.
+#' @param SE Numeric vector of standard errors for each `surv`.
+#' @param alpha Optional significance level. Default = `0.05`.
+#' @param tol_G Optional convergence tolerance for the infinite series
+#' computing the Hall–Wellner² distribution function *G*(*a*, *λ*). Default =
+#' `1e-10`.
+#' @param maxit_G Optional maximum number of iterations for the infinite series
+#' computing the Hall–Wellner distribution function *G*(*a*, *λ*). Default =
+#' `10000`.
+#' @param tol_K Optional convergence tolerance for the bisection root-finding
+#' of the Hall–Wellner quantile function *K*(*x*, *a*). Default = `1e-10`.
+#' @param maxit_K Optional maximum number of iterations for the bisection
+#' root-finding of the Hall–Wellner quantile function *K*(*x*, *a*). Default =
+#' `10000`.
+#' @references
+#' 1. Hollander, M. and McKeague, I.W., 1997. Likelihood ratio-based confidence
+#' bands for survival functions. *Journal of the American Statistical
+#' Association*, 92(437), pp. 215–226.
+#' 2. Hall, W.J. and Wellner, J.A., 1980. Confidence bands for a survival curve
+#' from censored data. *Biometrika*, 67(1), pp. 133–143.
+#' @export
+WH_HollanderMcKeague_alpha <- function(risk, event, surv, SE, alpha = 0.05, tol_G = 1e-10, maxit_G = 10000L, tol_K = 1e-10, maxit_K = 10000L) {
+    .Call(`_WHKMconf_WH_HollanderMcKeague_alpha`, risk, event, surv, SE, alpha, tol_G, maxit_G, tol_K, maxit_K)
 }
 
 #' Critical value for Nair's equal-precision confidence bands (Borokov–Sycheva)
 #'
-#' Computes the critical value *e* for Nair's equal-precision confidence bands¹
+#' Computes the critical value \ifelse{latex}{\out{$\mathit{e}_{\mathit{\alpha}}$}}{\ifelse{html}{\out{<i>e</i><sub><i>&alpha;</i></sub>}}{*e_alpha*}} for Nair's equal-precision confidence bands¹
 #' using Borokov–Sycheva approximation². Note: to reproduce Table 2 of Nair
 #' (1984), use `alpha/2`.
 #' @param lower Lower limit of supremum evaluation.
 #' @param upper Upper limit of supremum evaluation.
 #' @param alpha Significance level.
-#' @param tol Convergence tolerance. Default = `1e-10`.
-#' @param maxit Maximum number of iterations. Default = `10000`.
-#' @return The critical value *e*.
+#' @param tol Optional convergence tolerance. Default = `1e-10`.
+#' @param maxit Optional maximum number of iterations. Default = `10000`.
+#' @return The critical value \ifelse{latex}{\out{$\mathit{e}_{\mathit{\alpha}}$}}{\ifelse{html}{\out{<i>e</i><sub><i>&alpha;</i></sub>}}{*e_alpha*}}.
 #' @references
 #' 1. Nair, V.N., 1984. Conﬁdence bands for survival functions with censored
 #' data: a comparative study. *Technometrics*, 26, pp. 265–275.
@@ -119,19 +178,19 @@ WH_e_alpha <- function(lower, upper, alpha, tol = 1e-10, maxit = 10000L) {
 
 #' Critical value for Nair's equal-precision confidence bands (Monte Carlo)
 #'
-#' Computes the critical value *e* for Nair's equal-precision confidence bands¹
+#' Computes the critical value \ifelse{latex}{\out{$\mathit{e}_{\mathit{\alpha}}$}}{\ifelse{html}{\out{<i>e</i><sub><i>&alpha;</i></sub>}}{*e_alpha*}} for Nair's equal-precision confidence bands¹
 #' using Monte Carlo simulation. Note: to reproduce Table 2 of Nair (1984), use
 #' `alpha/2`.
 #' @param lower Lower limit of supremum evaluation.
 #' @param upper Upper limit of supremum evaluation.
 #' @param alpha Significance level.
-#' @param n_step Number of discretization steps for each variance-stabilized
-#' Brownian bridge. Default = `1e5`.
-#' @param n_rep Number of Monte Carlo replicates. Default = `1e5`.
-#' @param seed Random seed. Default = `24601`.
+#' @param n_step Optional number of discretization steps for each
+#' variance-stabilized Brownian bridge. Default = `1e5`.
+#' @param n_rep Optional number of Monte Carlo replicates. Default = `1e5`.
+#' @param seed Optional random seed. Default = `24601`.
 #' @details
 #' Parallelized using OpenMP if available.
-#' @return The critical value *e*.
+#' @return The critical value \ifelse{latex}{\out{$\mathit{e}_{\mathit{\alpha}}$}}{\ifelse{html}{\out{<i>e</i><sub><i>&alpha;</i></sub>}}{*e_alpha*}}.
 #' @references
 #' 1. Nair, V.N., 1984. Conﬁdence bands for survival functions with censored
 #' data: a comparative study. *Technometrics*, 26, pp. 265–275.

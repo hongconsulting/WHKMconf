@@ -19,6 +19,13 @@ WH_Rothman(surv, risk, event, alpha = 0.05)
 A numeric matrix with 2 columns: lower limit and upper limit.
 }
 \description{
-Computes Rothman binomial pointwise confidence intervals for the
+Computes Rothman binomial pointwise confidence intervals¹ for the
 Kaplan–Meier survival estimator at each unique event time.
+}
+\references{
+\enumerate{
+\item Rothman, K.J., 1978. Estimation of confidence limits for the cumulative
+probability of survival in life table analysis. \emph{Journal of Chronic Diseases},
+31(8), pp. 557–560.
+}
 }

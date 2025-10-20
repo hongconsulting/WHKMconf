@@ -4,13 +4,27 @@
 \alias{WH_Nair}
 \title{Nair confidence bands}
 \usage{
-WH_Nair(time, surv, SE, risk, event, alpha = 0.05, e_override = 0)
+WH_Nair(
+  time,
+  surv,
+  SE,
+  risk,
+  event,
+  alpha = 0.05,
+  verbose = TRUE,
+  tol = 1e-10,
+  maxit = 10000L,
+  adapt = TRUE,
+  MC_step = 100000L,
+  MC_rep = 100000L,
+  MC_seed = 24601L,
+  e_override = 0
+)
 }
 \arguments{
 \item{time}{Numeric vector of unique event times.}
 
-\item{surv}{Numeric vector of Kaplan–Meier survival probabilities at each
-\code{time}.}
+\item{surv}{Numeric vector of Kaplan–Meier survival estimates at each \code{time}.}
 
 \item{SE}{Numeric vector of standard errors for each \code{surv}.}
 
@@ -18,9 +32,31 @@ WH_Nair(time, surv, SE, risk, event, alpha = 0.05, e_override = 0)
 
 \item{event}{Integer vector of numbers of events at each \code{time}.}
 
-\item{alpha}{Significance level. Default = \code{0.05}.}
+\item{alpha}{Optional significance level. Default = \code{0.05}.}
 
-\item{e_override}{Optional numeric value overriding the critical value \emph{e}.}
+\item{verbose}{Optional logical; if \code{TRUE}, prints additional diagnostic
+information. Default = \code{TRUE}.}
+
+\item{tol}{Optional convergence tolerance for the Borokov–Sycheva
+approximation. Default = \code{1e-10}.}
+
+\item{maxit}{Optional maximum number of iterations for the Borokov–Sycheva
+approximation. Default = \code{10000}.}
+
+\item{adapt}{Optional logical; if \code{TRUE}, computation of \ifelse{latex}{\out{$\mathit{e}_{\mathit{\alpha}}$}}{\ifelse{html}{\out{<i>e</i><sub><i>&alpha;</i></sub>}}{*e_alpha*}} automatically
+falls back to the Monte Carlo method if the Borokov–Sycheva approximation
+fails to converge. Default = \code{TRUE}.}
+
+\item{MC_step}{Optional number of variance-stabilized Brownian bridge
+discretization steps for the Monte Carlo fallback. Default = \code{1e5}.}
+
+\item{MC_rep}{Optional number of replicates for the Monte Carlo fallback.
+Default = \code{1e5}.}
+
+\item{MC_seed}{Optional random seed for the Monte Carlo fallback. Default =
+\code{24601}.}
+
+\item{e_override}{Optional numeric value overriding the critical value \ifelse{latex}{\out{$\mathit{e}_{\mathit{\alpha}}$}}{\ifelse{html}{\out{<i>e</i><sub><i>&alpha;</i></sub>}}{*e_alpha*}}.}
 }
 \value{
 A numeric matrix with 2 columns: lower limit and upper limit.
@@ -30,11 +66,11 @@ Computes the Nair's log-transformed equal-precision simultaneous confidence
 band¹ for the Kaplan–Meier survival estimator at each unique event time.
 }
 \details{
-The equal-precision critical value \emph{e} is calculated using Borokov–Sycheva
+The equal-precision critical value \ifelse{latex}{\out{$\mathit{e}_{\mathit{\alpha}}$}}{\ifelse{html}{\out{<i>e</i><sub><i>&alpha;</i></sub>}}{*e_alpha*}} is calculated using Borokov–Sycheva
 approximation² (\code{WH_e_alpha()}). This method aligns more closely with
-Monte Carlo simulations using 100 000 Brownian bridge discretization steps
-and 100 000 replicates (\code{WH_e_alpha_MC()}) compared to the pre-computed tables
-published in Klein & Moeschberger (2003)³.
+Monte Carlo simulations using 100,000 Brownian bridge discretization steps
+and 100,000 replicates (\code{WH_e_alpha_MC()}) compared to the pre-computed tables
+published in Klein and Moeschberger (2003)³.
 }
 \references{
 \enumerate{

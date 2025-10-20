@@ -17,9 +17,9 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-This package re-implements selected pointwise confidence intervals and simultaneous confidence bands for Kaplan–Meier survival estimates from the the `km.ci` package and from the work of [Sachs, Brand, and Gabriel](https://doi.org/10.1038/s41416-022-01920-5) for improved performance. Differences compared to `km.ci` include:
+This package re-implements selected pointwise confidence intervals and simultaneous confidence bands for Kaplan–Meier survival estimates from the the `km.ci` package and from the work of [Sachs, Brand, and Gabriel (2022)](https://doi.org/10.1038/s41416-022-01920-5) for improved performance. Differences compared to `km.ci` include:
 
-* Nair confidence bands allows arbitrary confidence levels rather than being restricted to pre-computed tables of critical values. 
+* Nair confidence bands allows arbitrary confidence levels rather than being restricted to pre-computed tables of $e_{\alpha}$ critical values. 
 
 * Thomas–Grunkemeier confidence intervals maintain numerical stability at extremely small $\alpha$ values that may arise during the construction of Hollander–McKeague confidence bands.
 
@@ -86,4 +86,4 @@ legend(legend = c("Rothman", "Thomas\u2013Grunkemeier", "Nair", "Hollander\u2013
 5. Nair, V.N., 1984. Conﬁdence bands for survival functions with censored data: a comparative study. *Technometrics*, 26, pp. 265–275.
 6. Rothman, K.J., 1978. Estimation of confidence limits for the cumulative probability of survival in life table analysis. *Journal of Chronic Diseases*, 31(8), pp. 557–560.
 7. Sachs, M.C., Brand, A. and Gabriel, E.E., 2022. Confidence bands in survival analysis. *British Journal of Cancer*, 127(9), pp. 1636–1641.
-8. Thomas, D.R. and Grunkemeier, G.L., 1975. Confidence interval estimation of  survival probabilities for censored data. *Journal of the American Statistical Association*, 70(352), pp. 865–871.
+8. Thomas, D.R. and Grunkemeier, G.L., 1975. Confidence interval estimation of survival probabilities for censored data. *Journal of the American Statistical Association*, 70(352), pp. 865–871.

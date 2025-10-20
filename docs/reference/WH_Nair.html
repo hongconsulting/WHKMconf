@@ -9,7 +9,7 @@ band¹ for the Kaplan–Meier survival estimator at each unique event time."></h
 
     <a class="navbar-brand me-2" href="../index.html">WHKMconf</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,7 +41,22 @@ band¹ for the Kaplan–Meier survival estimator at each unique event time.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">WH_Nair</span><span class="op">(</span><span class="va">time</span>, <span class="va">surv</span>, <span class="va">SE</span>, <span class="va">risk</span>, <span class="va">event</span>, alpha <span class="op">=</span> <span class="fl">0.05</span>, e_override <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">WH_Nair</span><span class="op">(</span></span>
+<span>  <span class="va">time</span>,</span>
+<span>  <span class="va">surv</span>,</span>
+<span>  <span class="va">SE</span>,</span>
+<span>  <span class="va">risk</span>,</span>
+<span>  <span class="va">event</span>,</span>
+<span>  alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  tol <span class="op">=</span> <span class="fl">1e-10</span>,</span>
+<span>  maxit <span class="op">=</span> <span class="fl">10000L</span>,</span>
+<span>  adapt <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  MC_step <span class="op">=</span> <span class="fl">100000L</span>,</span>
+<span>  MC_rep <span class="op">=</span> <span class="fl">100000L</span>,</span>
+<span>  MC_seed <span class="op">=</span> <span class="fl">24601L</span>,</span>
+<span>  e_override <span class="op">=</span> <span class="fl">0</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -53,8 +68,7 @@ band¹ for the Kaplan–Meier survival estimator at each unique event time.</p>
 
 
 <dt id="arg-surv">surv<a class="anchor" aria-label="anchor" href="#arg-surv"></a></dt>
-<dd><p>Numeric vector of Kaplan–Meier survival probabilities at each
-<code>time</code>.</p></dd>
+<dd><p>Numeric vector of Kaplan–Meier survival estimates at each <code>time</code>.</p></dd>
 
 
 <dt id="arg-se">SE<a class="anchor" aria-label="anchor" href="#arg-se"></a></dt>
@@ -70,11 +84,47 @@ band¹ for the Kaplan–Meier survival estimator at each unique event time.</p>
 
 
 <dt id="arg-alpha">alpha<a class="anchor" aria-label="anchor" href="#arg-alpha"></a></dt>
-<dd><p>Significance level. Default = <code>0.05</code>.</p></dd>
+<dd><p>Optional significance level. Default = <code>0.05</code>.</p></dd>
+
+
+<dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
+<dd><p>Optional logical; if <code>TRUE</code>, prints additional diagnostic
+information. Default = <code>TRUE</code>.</p></dd>
+
+
+<dt id="arg-tol">tol<a class="anchor" aria-label="anchor" href="#arg-tol"></a></dt>
+<dd><p>Optional convergence tolerance for the Borokov–Sycheva
+approximation. Default = <code>1e-10</code>.</p></dd>
+
+
+<dt id="arg-maxit">maxit<a class="anchor" aria-label="anchor" href="#arg-maxit"></a></dt>
+<dd><p>Optional maximum number of iterations for the Borokov–Sycheva
+approximation. Default = <code>10000</code>.</p></dd>
+
+
+<dt id="arg-adapt">adapt<a class="anchor" aria-label="anchor" href="#arg-adapt"></a></dt>
+<dd><p>Optional logical; if <code>TRUE</code>, computation of <i>e</i><sub><i>α</i></sub> automatically
+falls back to the Monte Carlo method if the Borokov–Sycheva approximation
+fails to converge. Default = <code>TRUE</code>.</p></dd>
+
+
+<dt id="arg-mc-step">MC_step<a class="anchor" aria-label="anchor" href="#arg-mc-step"></a></dt>
+<dd><p>Optional number of variance-stabilized Brownian bridge
+discretization steps for the Monte Carlo fallback. Default = <code>1e5</code>.</p></dd>
+
+
+<dt id="arg-mc-rep">MC_rep<a class="anchor" aria-label="anchor" href="#arg-mc-rep"></a></dt>
+<dd><p>Optional number of replicates for the Monte Carlo fallback.
+Default = <code>1e5</code>.</p></dd>
+
+
+<dt id="arg-mc-seed">MC_seed<a class="anchor" aria-label="anchor" href="#arg-mc-seed"></a></dt>
+<dd><p>Optional random seed for the Monte Carlo fallback. Default =
+<code>24601</code>.</p></dd>
 
 
 <dt id="arg-e-override">e_override<a class="anchor" aria-label="anchor" href="#arg-e-override"></a></dt>
-<dd><p>Optional numeric value overriding the critical value <em>e</em>.</p></dd>
+<dd><p>Optional numeric value overriding the critical value <i>e</i><sub><i>α</i></sub>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -83,11 +133,11 @@ band¹ for the Kaplan–Meier survival estimator at each unique event time.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The equal-precision critical value <em>e</em> is calculated using Borokov–Sycheva
+    <p>The equal-precision critical value <i>e</i><sub><i>α</i></sub> is calculated using Borokov–Sycheva
 approximation² (<code><a href="WH_e_alpha.html">WH_e_alpha()</a></code>). This method aligns more closely with
-Monte Carlo simulations using 100 000 Brownian bridge discretization steps
-and 100 000 replicates (<code><a href="WH_e_alpha_MC.html">WH_e_alpha_MC()</a></code>) compared to the pre-computed tables
-published in Klein &amp; Moeschberger (2003)³.</p>
+Monte Carlo simulations using 100,000 Brownian bridge discretization steps
+and 100,000 replicates (<code><a href="WH_e_alpha_MC.html">WH_e_alpha_MC()</a></code>) compared to the pre-computed tables
+published in Klein and Moeschberger (2003)³.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>

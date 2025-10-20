@@ -22,15 +22,15 @@ double WH_Ax(double a, double b, double x) {
 
 //' Critical value for Nair's equal-precision confidence bands (Borokov–Sycheva)
 //'
-//' Computes the critical value *e* for Nair's equal-precision confidence bands¹
+//' Computes the critical value \ifelse{latex}{\out{$\mathit{e}_{\mathit{\alpha}}$}}{\ifelse{html}{\out{<i>e</i><sub><i>&alpha;</i></sub>}}{*e_alpha*}} for Nair's equal-precision confidence bands¹
 //' using Borokov–Sycheva approximation². Note: to reproduce Table 2 of Nair
 //' (1984), use `alpha/2`.
 //' @param lower Lower limit of supremum evaluation.
 //' @param upper Upper limit of supremum evaluation.
 //' @param alpha Significance level.
-//' @param tol Convergence tolerance. Default = `1e-10`.
-//' @param maxit Maximum number of iterations. Default = `10000`.
-//' @return The critical value *e*.
+//' @param tol Optional convergence tolerance. Default = `1e-10`.
+//' @param maxit Optional maximum number of iterations. Default = `10000`.
+//' @return The critical value \ifelse{latex}{\out{$\mathit{e}_{\mathit{\alpha}}$}}{\ifelse{html}{\out{<i>e</i><sub><i>&alpha;</i></sub>}}{*e_alpha*}}.
 //' @references
 //' 1. Nair, V.N., 1984. Conﬁdence bands for survival functions with censored
 //' data: a comparative study. *Technometrics*, 26, pp. 265–275.
@@ -59,19 +59,19 @@ double WH_e_alpha(double lower, double upper, double alpha, double tol = 1e-10, 
 
 //' Critical value for Nair's equal-precision confidence bands (Monte Carlo)
 //'
-//' Computes the critical value *e* for Nair's equal-precision confidence bands¹
+//' Computes the critical value \ifelse{latex}{\out{$\mathit{e}_{\mathit{\alpha}}$}}{\ifelse{html}{\out{<i>e</i><sub><i>&alpha;</i></sub>}}{*e_alpha*}} for Nair's equal-precision confidence bands¹
 //' using Monte Carlo simulation. Note: to reproduce Table 2 of Nair (1984), use
 //' `alpha/2`.
 //' @param lower Lower limit of supremum evaluation.
 //' @param upper Upper limit of supremum evaluation.
 //' @param alpha Significance level.
-//' @param n_step Number of discretization steps for each variance-stabilized
-//' Brownian bridge. Default = `1e5`.
-//' @param n_rep Number of Monte Carlo replicates. Default = `1e5`.
-//' @param seed Random seed. Default = `24601`.
+//' @param n_step Optional number of discretization steps for each
+//' variance-stabilized Brownian bridge. Default = `1e5`.
+//' @param n_rep Optional number of Monte Carlo replicates. Default = `1e5`.
+//' @param seed Optional random seed. Default = `24601`.
 //' @details
 //' Parallelized using OpenMP if available.
-//' @return The critical value *e*.
+//' @return The critical value \ifelse{latex}{\out{$\mathit{e}_{\mathit{\alpha}}$}}{\ifelse{html}{\out{<i>e</i><sub><i>&alpha;</i></sub>}}{*e_alpha*}}.
 //' @references
 //' 1. Nair, V.N., 1984. Conﬁdence bands for survival functions with censored
 //' data: a comparative study. *Technometrics*, 26, pp. 265–275.
