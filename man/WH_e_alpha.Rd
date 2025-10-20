@@ -23,7 +23,7 @@ The critical value \emph{e}.
 \description{
 Computes the critical value \emph{e} for Nair's equal-precision confidence bands¹
 using Borokov–Sycheva approximation². Note: to reproduce Table 2 of Nair
-(1982), use \code{alpha/2}.
+(1984), use \code{alpha/2}.
 }
 \references{
 \enumerate{

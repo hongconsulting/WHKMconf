@@ -20,19 +20,19 @@ WH_e_alpha_MC(
 
 \item{alpha}{Significance level.}
 
-\item{n_step}{Number of discretization steps for each Brownian bridge.
-Default = \code{1e5}.}
+\item{n_step}{Number of discretization steps for each variance-stabilized
+Brownian bridge. Default = \code{1e5}.}
 
 \item{n_rep}{Number of Monte Carlo replicates. Default = \code{1e5}.}
 
 \item{seed}{Random seed. Default = \code{24601}.}
 }
 \value{
-The critical value \emph{e}.
+The critical value \eqn{e_\alpha}.
 }
 \description{
 Computes the critical value \emph{e} for Nair's equal-precision confidence bands¹
-using Monte Carlo simulation. Note: to reproduce Table 2 of Nair (1982), use
+using Monte Carlo simulation. Note: to reproduce Table 2 of Nair (1984), use
 \code{alpha/2}.
 }
 \details{

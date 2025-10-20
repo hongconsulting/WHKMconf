@@ -99,7 +99,7 @@ WH_HollanderMcKeague <- function(time, risk, event, alpha = 0.05, warn = TRUE, t
 #'
 #' Computes the critical value *e* for Nair's equal-precision confidence bands¹
 #' using Borokov–Sycheva approximation². Note: to reproduce Table 2 of Nair
-#' (1982), use `alpha/2`.
+#' (1984), use `alpha/2`.
 #' @param lower Lower limit of supremum evaluation.
 #' @param upper Upper limit of supremum evaluation.
 #' @param alpha Significance level.
@@ -120,18 +120,18 @@ WH_e_alpha <- function(lower, upper, alpha, tol = 1e-10, maxit = 10000L) {
 #' Critical value for Nair's equal-precision confidence bands (Monte Carlo)
 #'
 #' Computes the critical value *e* for Nair's equal-precision confidence bands¹
-#' using Monte Carlo simulation. Note: to reproduce Table 2 of Nair (1982), use
+#' using Monte Carlo simulation. Note: to reproduce Table 2 of Nair (1984), use
 #' `alpha/2`.
 #' @param lower Lower limit of supremum evaluation.
 #' @param upper Upper limit of supremum evaluation.
 #' @param alpha Significance level.
-#' @param n_step Number of discretization steps for each Brownian bridge.
-#' Default = `1e5`.
+#' @param n_step Number of discretization steps for each variance-stabilized
+#' Brownian bridge. Default = `1e5`.
 #' @param n_rep Number of Monte Carlo replicates. Default = `1e5`.
 #' @param seed Random seed. Default = `24601`.
 #' @details
 #' Parallelized using OpenMP if available.
-#' @return The critical value *e*.
+#' @return The critical value \eqn{e_\alpha}.
 #' @references
 #' 1. Nair, V.N., 1984. Conﬁdence bands for survival functions with censored
 #' data: a comparative study. *Technometrics*, 26, pp. 265–275.
