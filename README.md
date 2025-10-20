@@ -19,7 +19,7 @@ performance. Differences compared to `km.ci` include:
   at extremely small $\alpha$ values that may arise during the
   construction of Hollander–McKeague confidence bands.
 
-‘WH’ code is designed to maximise speed, for use in simulation studies.
+‘WH’ code is designed to maximize speed, for use in simulation studies.
 As such, input validation is minimal and the user is responsible for
 ensuring valid use.
 
@@ -66,7 +66,7 @@ lines(y = CI$Rl, x = CI$time, type = "s", lty = 1, col = grDevices::rgb(1, 0, 0)
 lines(y = CI$Ru, x = CI$time, type = "s", lty = 1, col = grDevices::rgb(1, 0, 0))
 lines(y = CI$TGl, x = CI$time, type = "s", lty = 1, col = grDevices::rgb(1, 0.75, 0))
 lines(y = CI$TGu, x = CI$time, type = "s", lty = 1, col = grDevices::rgb(1, 0.75, 0))
-clip(x1 = 0, y1 = 0, x2 = t_eventmax, y2 = 1)
+clip(x1 = 0, y1 = 0, x2 = t_eventmax + 0.05, y2 = 1)
 lines(y = CI$Nl, x = CI$time, type = "s", lty = 2, col = grDevices::rgb(0, 0.75, 0))
 lines(y = CI$Nu, x = CI$time, type = "s", lty = 2, col = grDevices::rgb(0, 0.75, 0))
 clip(x1 = 0, y1 = 0, x2 = t_max, y2 = 1)
