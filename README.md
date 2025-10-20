@@ -13,7 +13,7 @@ Gabriel](https://doi.org/10.1038/s41416-022-01920-5) for improved
 performance. Differences compared to `km.ci` include:
 
 - Nair confidence bands allows arbitrary confidence levels rather than
-  being restricted to pre-computed tables of $e_\alpha$ critical values.
+  being restricted to pre-computed tables of $e$ critical values.
 
 - Thomas–Grunkemeier confidence intervals maintain numerical stability
   at extremely small $\alpha$ values that may arise during the
