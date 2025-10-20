@@ -26,8 +26,8 @@ WH_Nair(time, surv, SE, risk, event, alpha = 0.05, e_override = 0)
 A numeric matrix with 2 columns: lower limit and upper limit.
 }
 \description{
-Computes the Nair's equal-precision simultaneous confidence band¹ for the
-Kaplan–Meier survival estimator at each unique event time.
+Computes the Nair's log-transformed equal-precision simultaneous confidence
+band¹ for the Kaplan–Meier survival estimator at each unique event time.
 }
 \details{
 The equal-precision critical value \emph{e} is calculated using Borokov–Sycheva

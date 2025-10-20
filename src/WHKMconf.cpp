@@ -74,8 +74,8 @@ Eigen::VectorXd WH_ThomasGrunkemeier_CI(const Eigen::VectorXd& time,
 
 //' Nair confidence bands
 //'
-//' Computes the Nair's equal-precision simultaneous confidence band¹ for the
-//' Kaplan–Meier survival estimator at each unique event time.
+//' Computes the Nair's log-transformed equal-precision simultaneous confidence
+//' band¹ for the Kaplan–Meier survival estimator at each unique event time.
 //' @param time Numeric vector of unique event times.
 //' @param surv Numeric vector of Kaplan–Meier survival probabilities at each
 //' `time`.
