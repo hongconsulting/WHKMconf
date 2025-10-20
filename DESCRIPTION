@@ -5,11 +5,11 @@ Authors@R:
     person("Wei", "Hong", , "wei.hong@hongconsulting.ai", role = c("aut", "cre"))
 Description: This package re-implements selected pointwise confidence intervals 
     and simultaneous confidence bands for Kaplan-Meier survival estimates from 
-    the the 'km.ci' package, and from the work of Sachs, Brand, and Gabriel 
-    (DOI:10.1038/s41416-022-01920-5). The implementation for Nair confidence 
-    bands allows arbitrary confidence levels rather than being restricted to 
-    pre-computed tables of critical values. The implementation for 
-    Thomas–Grunkemeier confidence intervals maintains numerical stability at 
+    the the 'km.ci' package and from the work of Sachs, Brand, and Gabriel 
+    (DOI:10.1038/s41416-022-01920-5) for improved performance. The implemented 
+    Nair confidence bands allows arbitrary confidence levels rather than being 
+    restricted to pre-computed tables of critical values. The implemented 
+    Thomas–Grunkemeier confidence intervals maintain numerical stability at 
     extremely small alpha values that may arise during the construction of 
     Hollander–McKeague confidence bands. 'WH' code is designed to maximise 
     speed, for use in simulation studies. As such, input validation is minimal 
