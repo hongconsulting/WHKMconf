@@ -39,7 +39,7 @@ double WH_Ax(double a, double b, double x) {
 //' pp. 359–393.
 //' @export
 // [[Rcpp::export]]
-double WH_e_alpha_BS(double lower, double upper, double alpha, double tol = 1e-10, int maxit = 10000) {
+double WH_e_alpha(double lower, double upper, double alpha, double tol = 1e-10, int maxit = 10000) {
   double x_lower = 0.5, x_upper = 5.0;
   double f_lower = WH_Ax(lower, upper, x_lower) - alpha;
   for (int i = 0; i < maxit; ++i) {
@@ -53,8 +53,8 @@ double WH_e_alpha_BS(double lower, double upper, double alpha, double tol = 1e-1
       f_lower = f_mid;
     }
   }
-  std::cout << "[WH_e_alpha_BS] lower = " << lower << ", upper = " << upper << ", alpha = " << alpha << std::endl;
-  throw std::runtime_error("[WH_e_alpha_BS] non-convergence");
+  // std::cout << "[WH_e_alpha] lower = " << lower << ", upper = " << upper << ", alpha = " << alpha << std::endl;
+  throw std::runtime_error("[WH_e_alpha] non-convergence");
 }
 
 //' Critical value for Nair's equal-precision confidence bands (Monte Carlo)

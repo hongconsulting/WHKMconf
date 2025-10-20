@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-This package re-implements selected pointwise confidence intervals and simultaneous confidence bands for Kaplan-Meier survival estimates from the the `km.ci` package, and from the work of Sachs, Brand, and Gabriel ([DOI:10.1038/s41416-022-01920-5](https://www.nature.com/articles/s41416-022-01920-5)). The implementation for Nair confidence bands allows arbitrary confidence levels rather than being restricted to pre-computed tables of $e_\alpha$ critical values. The implementation for Thomas–Grunkemeier confidence intervals maintains numerical stability at extremely small $\alpha$ values that may arise during the construction of Hollander–McKeague confidence bands. 'WH' code is designed to maximise speed, for use in simulation studies. As such, input validation is minimal and the user is responsible for ensuring valid use.
+This package re-implements selected pointwise confidence intervals and simultaneous confidence bands for Kaplan-Meier survival estimates from the the `km.ci` package, and from the work of [Sachs, Brand, and Gabriel](https://doi.org/10.1038/s41416-022-01920-5). The implementation for Nair confidence bands allows arbitrary confidence levels rather than being restricted to pre-computed tables of $e_\alpha$ critical values. The implementation for Thomas–Grunkemeier confidence intervals maintains numerical stability at extremely small $\alpha$ values that may arise during the construction of Hollander–McKeague confidence bands. 'WH' code is designed to maximise speed, for use in simulation studies. As such, input validation is minimal and the user is responsible for ensuring valid use.
     
 ## Installation
 

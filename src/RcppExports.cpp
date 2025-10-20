@@ -75,9 +75,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// WH_e_alpha_BS
-double WH_e_alpha_BS(double lower, double upper, double alpha, double tol, int maxit);
-RcppExport SEXP _WHKMconf_WH_e_alpha_BS(SEXP lowerSEXP, SEXP upperSEXP, SEXP alphaSEXP, SEXP tolSEXP, SEXP maxitSEXP) {
+// WH_e_alpha
+double WH_e_alpha(double lower, double upper, double alpha, double tol, int maxit);
+RcppExport SEXP _WHKMconf_WH_e_alpha(SEXP lowerSEXP, SEXP upperSEXP, SEXP alphaSEXP, SEXP tolSEXP, SEXP maxitSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -86,7 +86,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< int >::type maxit(maxitSEXP);
-    rcpp_result_gen = Rcpp::wrap(WH_e_alpha_BS(lower, upper, alpha, tol, maxit));
+    rcpp_result_gen = Rcpp::wrap(WH_e_alpha(lower, upper, alpha, tol, maxit));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -112,7 +112,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_WHKMconf_WH_Rothman", (DL_FUNC) &_WHKMconf_WH_Rothman, 4},
     {"_WHKMconf_WH_ThomasGrunkemeier", (DL_FUNC) &_WHKMconf_WH_ThomasGrunkemeier, 4},
     {"_WHKMconf_WH_HollanderMcKeague", (DL_FUNC) &_WHKMconf_WH_HollanderMcKeague, 9},
-    {"_WHKMconf_WH_e_alpha_BS", (DL_FUNC) &_WHKMconf_WH_e_alpha_BS, 5},
+    {"_WHKMconf_WH_e_alpha", (DL_FUNC) &_WHKMconf_WH_e_alpha, 5},
     {"_WHKMconf_WH_e_alpha_MC", (DL_FUNC) &_WHKMconf_WH_e_alpha_MC, 6},
     {NULL, NULL, 0}
 };

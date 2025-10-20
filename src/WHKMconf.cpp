@@ -74,7 +74,7 @@ Eigen::VectorXd WH_ThomasGrunkemeier_CI(const Eigen::VectorXd& time,
 
 //' Nair confidence bands
 //'
-//' Computes the Nair's equal-precision simultaneous confidence band for the
+//' Computes the Nair's equal-precision simultaneous confidence band¹ for the
 //' Kaplan–Meier survival estimator at each unique event time.
 //' @param time Numeric vector of unique event times.
 //' @param surv Numeric vector of Kaplan–Meier survival probabilities at each
@@ -86,7 +86,20 @@ Eigen::VectorXd WH_ThomasGrunkemeier_CI(const Eigen::VectorXd& time,
 //' @param e_override Optional numeric value overriding the critical value *e*.
 //' @return A numeric matrix with 2 columns: lower limit and upper limit.
 //' @details
-//' ...
+//' The equal-precision critical value *e* is calculated using Borokov–Sycheva
+//' approximation² (`WH_e_alpha()`). This method aligns more closely with
+//' Monte Carlo simulations using 100 000 Brownian bridge discretization steps
+//' and 100 000 replicates (`WH_e_alpha_MC()`) compared to the pre-computed tables
+//' published in Klein & Moeschberger (2003)³.
+//' @references
+//' 1. Nair, V.N., 1984. Conﬁdence bands for survival functions with censored
+//' data: a comparative study. *Technometrics*, 26, pp. 265–275.
+//' 2. Borokov, A.A. and Sycheva, N.M., 1968. On asymptotically optimal
+//' non-parametric criteria. *Theory of Probability & Its Applications*, 13(3),
+//' pp. 359–393.
+//' 3. Klein, J.P. and Moeschberger, M.L., 2003. Appendix C: Statistical Tables.
+//' In *Survival Analysis: Techniques for Censored and Truncated Data*, pp.
+//' 455–482. New York: Springer New York.
 //' @export
 // [[Rcpp::export]]
 Eigen::MatrixXd WH_Nair(const Eigen::VectorXd& time, const Eigen::VectorXd& surv,
@@ -109,7 +122,7 @@ Eigen::MatrixXd WH_Nair(const Eigen::VectorXd& time, const Eigen::VectorXd& surv
   // if (echo) std::cout << "[WH_Nair] t = " << time(i_first) << " to " << time(i_last) << ", lower = " << lower << ", upper = " << upper << std::endl;
   double e;
   if (e_override == 0.0) {
-    e = WH_e_alpha_BS(lower, upper, alpha);
+    e = WH_e_alpha(lower, upper, alpha);
   } else {
     e = e_override;
   }

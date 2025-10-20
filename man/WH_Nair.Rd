@@ -26,9 +26,25 @@ WH_Nair(time, surv, SE, risk, event, alpha = 0.05, e_override = 0)
 A numeric matrix with 2 columns: lower limit and upper limit.
 }
 \description{
-Computes the Nair's equal-precision simultaneous confidence band for the
+Computes the Nair's equal-precision simultaneous confidence band¹ for the
 Kaplan–Meier survival estimator at each unique event time.
 }
 \details{
-...
+The equal-precision critical value \emph{e} is calculated using Borokov–Sycheva
+approximation² (\code{WH_e_alpha()}). This method aligns more closely with
+Monte Carlo simulations using 100 000 Brownian bridge discretization steps
+and 100 000 replicates (\code{WH_e_alpha_MC()}) compared to the pre-computed tables
+published in Klein & Moeschberger (2003)³.
+}
+\references{
+\enumerate{
+\item Nair, V.N., 1984. Conﬁdence bands for survival functions with censored
+data: a comparative study. \emph{Technometrics}, 26, pp. 265–275.
+\item Borokov, A.A. and Sycheva, N.M., 1968. On asymptotically optimal
+non-parametric criteria. \emph{Theory of Probability & Its Applications}, 13(3),
+pp. 359–393.
+\item Klein, J.P. and Moeschberger, M.L., 2003. Appendix C: Statistical Tables.
+In \emph{Survival Analysis: Techniques for Censored and Truncated Data}, pp.
+455–482. New York: Springer New York.
+}
 }
