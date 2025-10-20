@@ -75,7 +75,7 @@ legend(legend = c("Rothman", "Thomas\u2013Grunkemeier", "Nair", "Hollander\u2013
        x = 0, y = 0, yjust = 0, xpd = TRUE)
 ```
 
-<img src="man/figures/README-unnamed-chunk-2-1.png" width="100%" />
+![](man/figures/README-unnamed-chunk-2-1.png)<!-- -->
 
 ## Further Reading
 
