@@ -54,7 +54,7 @@ if (max(CI$time) < t_max) {
   CI$time[nrow(CI)] <- t_max
 }
 
-par(cex = 1, las = 1, mar = c(4, 4, 4, 1))
+par(cex = 1, las = 1, mar = c(4, 4, 1, 1))
 plot(x = CI$time, y = CI$surv, type = "s", xaxs = "i", yaxs = "i", xaxt = "n", yaxt = "n", xlab = "Time (months)", ylab = "Overall survival", xlim = c(0, t_max), ylim = c(0, 1))
 axis(1, at = seq(0, t_max, 6))
 axis(2, at = seq(0, 1, 0.25))
@@ -71,7 +71,7 @@ lines(y = CI$HMu, x = CI$time, type = "s", lty = 2, col = grDevices::rgb(0, 0, 1
 legend(legend = c("Rothman", "Thomas\u2013Grunkemeier", "Nair", "Hollander\u2013McKeague"),
        col = c(grDevices::rgb(1, 0, 0), grDevices::rgb(1, 0.75, 0),
                grDevices::rgb(0, 0.75, 0), grDevices::rgb(0, 0, 1)),
-       bty = "n", lty = c(1, 1, 1, 2), inset = 0, ncol = 2,
+       bty = "n", lty = c(1, 1, 2, 2), inset = 0, ncol = 2,
        x = 0, y = 0, yjust = 0, xpd = TRUE)
 ```
 
