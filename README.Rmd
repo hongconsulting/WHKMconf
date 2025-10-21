@@ -17,11 +17,13 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-This package re-implements selected pointwise confidence intervals and simultaneous confidence bands for Kaplan–Meier survival estimates from the the `km.ci` package and from the work of [Sachs, Brand, and Gabriel (2022)](https://doi.org/10.1038/s41416-022-01920-5) for improved performance. Differences compared to `km.ci` include:
+This package re-implements selected pointwise confidence intervals and simultaneous confidence bands for Kaplan–Meier survival estimates from the the `km.ci` package and from the work of [Sachs, Brand, and Gabriel (2022)](https://doi.org/10.1038/s41416-022-01920-5) for improved performance. Other distinguishing features of `WHKMconf` include: 
 
-* Nair confidence bands allows arbitrary confidence levels rather than being restricted to pre-computed tables of $e_{\alpha}$ critical values. 
+* [Hollander–McKeague confidence bands](https://hongconsulting.github.io/WHKMconf/reference/WH_HollanderMcKeague.html) include an `adapt` option that automatically shortens the length of the band to prevent excessive width.
 
-* Thomas–Grunkemeier confidence intervals maintain numerical stability at extremely small $\alpha$ values that may arise during the construction of Hollander–McKeague confidence bands.
+* [Nair confidence bands](https://hongconsulting.github.io/WHKMconf/reference/WH_Nair.html) allow arbitrary confidence levels rather than being restricted to pre-computed tables of $e_{\alpha}$ critical values. 
+
+* [Thomas–Grunkemeier confidence intervals](https://hongconsulting.github.io/WHKMconf/reference/WH_ThomasGrunkemeier.html) maintain numerical stability at extremely small $\alpha$ values that may arise during the construction of Hollander–McKeague confidence bands.
 
 'WH' code is designed to maximize speed, for use in simulation studies. As such, input validation is minimal and the user is responsible for ensuring valid use.
     
@@ -35,14 +37,14 @@ remotes::install_github("hongconsulting/WHKMconf")
 
 ## Example
 
-```{r, fig.width = 6, fig.height = 5, dpi = 150}
+```{r example_1, fig.width = 6, fig.height = 5, dpi = 150}
 library(survival)
 library(WHKMconf)
 data <- data.frame("time" = survival::ovarian$futime, "status" = survival::ovarian$fustat)
 fit <- survival::survfit(survival::Surv(time * 12 / 365.2425, status) ~ 1, data = data)
 s <- summary(fit)
 
-CI <- data.frame("time" = s$time, "surv" = s$surv)
+CI <- data.frame("time" = s$time, "surv" = s$surv, "SE" = s$std.err)
 CI.R <- data.frame(WH_Rothman(s$surv, s$n.risk, s$n.event))
 CI <- cbind(CI, setNames(CI.R, c("Rl", "Ru")))
 CI.TG <- data.frame(WH_ThomasGrunkemeier(s$time, s$n.risk, s$n.event))

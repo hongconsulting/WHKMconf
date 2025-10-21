@@ -97,14 +97,15 @@ Eigen::VectorXd WH_ThomasGrunkemeier_CI(const Eigen::VectorXd& time,
 //' Default = `1e5`.
 //' @param MC_seed Optional random seed for the Monte Carlo fallback. Default =
 //' `24601`.
-//' @param e_override Optional numeric value overriding the critical value \ifelse{latex}{\out{$\mathit{e}_{\mathit{\alpha}}$}}{\ifelse{html}{\out{<i>e</i><sub><i>&alpha;</i></sub>}}{*e_alpha*}}.
+//' @param e_alpha_override Optional numeric value overriding the critical value
+//' \ifelse{latex}{\out{$\mathit{e}_{\mathit{\alpha}}$}}{\ifelse{html}{\out{<i>e</i><sub><i>&alpha;</i></sub>}}{*e_alpha*}}.
 //' @return A numeric matrix with 2 columns: lower limit and upper limit.
 //' @details
 //' The equal-precision critical value \ifelse{latex}{\out{$\mathit{e}_{\mathit{\alpha}}$}}{\ifelse{html}{\out{<i>e</i><sub><i>&alpha;</i></sub>}}{*e_alpha*}} is calculated using Borokov–Sycheva
 //' approximation² (`WH_e_alpha()`). This method aligns more closely with
-//' Monte Carlo simulations using 100,000 Brownian bridge discretization steps
-//' and 100,000 replicates (`WH_e_alpha_MC()`) compared to the pre-computed tables
-//' published in Klein and Moeschberger (2003)³.
+//' Monte Carlo simulations using 100,000 variance-stabilized Brownian bridge
+//' discretization steps and 100,000 replicates (`WH_e_alpha_MC()`) compared to
+//' the pre-computed tables published in Klein and Moeschberger (2003)³.
 //' @references
 //' 1. Nair, V.N., 1984. Conﬁdence bands for survival functions with censored
 //' data: a comparative study. *Technometrics*, 26, pp. 265–275.
@@ -121,14 +122,17 @@ Eigen::MatrixXd WH_Nair(const Eigen::VectorXd& time, const Eigen::VectorXd& surv
                         const Eigen::VectorXi& event, double alpha = 0.05,
                         bool verbose = true, double tol = 1e-10, int maxit = 10000,
                         bool adapt = true, int MC_step = 1e5, int MC_rep = 1e5,
-                        int MC_seed = 24601, double e_override = 0.0) {
+                        int MC_seed = 24601, double e_alpha_override = 0.0) {
+  if ((event.array() == 0).any()) {
+    throw std::invalid_argument("[WH_Nair] inputs must be at event-time steps, not all-time steps");
+  }
   int n_step = surv.size();
   int i_first = 0;
-  while (i_first < n_step && event(i_first) == 0) ++i_first;
+  while (i_first < n_step && (SE(i_first) == 0.0 || std::isnan(SE(i_first)))) ++i_first;
   int i_last = n_step - 1;
-  while (i_last > i_first && event(i_last) == 0) --i_last;
-  double S_first = surv(i_first);
-  double S_last = surv(i_last);
+  while (i_last > i_first && (SE(i_last) == 0.0 || std::isnan(SE(i_last)))) --i_last;
+  // double S_first = surv(i_first);
+  // double S_last = surv(i_last);
   double n = risk[0];
   Eigen::VectorXd variance = (SE.array() / surv.array()).square();
   double variance_lower = variance(i_first);
@@ -136,10 +140,10 @@ Eigen::MatrixXd WH_Nair(const Eigen::VectorXd& time, const Eigen::VectorXd& surv
   double lower = n * variance_lower / (1.0 + n * variance_lower);
   double upper = n * variance_upper / (1.0 + n * variance_upper);
   double e;
-  if (e_override != 0.0) {
-    e = e_override;
+  if (e_alpha_override != 0.0) {
+    e = e_alpha_override;
   } else {
-    if (verbose) Rcpp::Rcout << "[WH_Nair] lower = " << lower << ", upper = " << upper << std::endl;
+    if (verbose) Rcpp::Rcout << "[WH_Nair] i = " << i_first << ":" << i_last << " of " << n_step - 1 << ", lower = " << lower << ", upper = " << upper << std::endl;
     if (adapt) {
       try {
         e = WH_e_alpha(lower, upper, alpha, tol, maxit);
@@ -165,7 +169,7 @@ Eigen::MatrixXd WH_Nair(const Eigen::VectorXd& time, const Eigen::VectorXd& surv
 //' @param surv Numeric vector of Kaplan–Meier survival probabilities.
 //' @param risk Integer vector of numbers at risk at each change in `surv`.
 //' @param event Integer vector of event counts at each change in `surv`.
-//' @param alpha Significance level. Default = `0.05`.
+//' @param alpha Optional significance level. Default = `0.05`.
 //' @return A numeric matrix with 2 columns: lower limit and upper limit.
 //' @references
 //' 1. Rothman, K.J., 1978. Estimation of confidence limits for the cumulative
@@ -192,10 +196,10 @@ Eigen::MatrixXd WH_Rothman(const Eigen::VectorXd& surv,
   Eigen::VectorXd scale = n_null.array() / (n_null.array() + Z2);
   Eigen::VectorXd upper = scale.array() * (surv.array() + Z2 / (2.0 * n_null.array()) + Z * root.array());
   Eigen::VectorXd lower = scale.array() * (surv.array() + Z2 / (2.0 * n_null.array()) - Z * root.array());
-  for (int i = 0; i < n; ++i) {
-    if (std::isnan(upper(i))) upper(i) = 1.0;
-    if (std::isnan(lower(i))) lower(i) = 1.0;
-  }
+  // for (int i = 0; i < n; ++i) {
+  //   if (std::isnan(upper(i))) upper(i) = 1.0;
+  //   if (std::isnan(lower(i))) lower(i) = 1.0;
+  // }
   Eigen::MatrixXd output(n, 2);
   output.col(0) = lower;
   output.col(1) = upper;
@@ -209,7 +213,7 @@ Eigen::MatrixXd WH_Rothman(const Eigen::VectorXd& surv,
 //' @param time Numeric vector of unique event times.
 //' @param risk Integer vector of numbers at risk at each `time`.
 //' @param event Integer vector of numbers of events at each `time`.
-//' @param alpha Significance level. Default = `0.05`.
+//' @param alpha Optional significance level. Default = `0.05`.
 //' @return A numeric matrix with 2 columns: lower limit and upper limit.
 //' @references
 //' 1. Thomas, D.R. and Grunkemeier, G.L., 1975. Confidence interval estimation
@@ -231,7 +235,6 @@ Eigen::MatrixXd WH_ThomasGrunkemeier(const Eigen::VectorXd& time,
   int j = 0;
   for (int i = 0; i < n; ++i) {
     if (event(i) == 0) continue;
-    // output(j, 0) = time(i);
     if (event(i) != risk(i)) {
       Eigen::VectorXd CI = WH_ThomasGrunkemeier_CI(X_time, X_status, time(i), alpha);
       output(j, 0) = CI(0);
@@ -254,6 +257,10 @@ Eigen::MatrixXd WH_ThomasGrunkemeier(const Eigen::VectorXd& time,
 //' @param alpha Optional significance level. Default = `0.05`.
 //' @param verbose Optional logical; if `TRUE`, prints additional diagnostic
 //' information. Default = `TRUE`.
+//' @param adapt Optional logical; if `TRUE`, iteratively excludes the latest
+//' remaining event time from the time range of the confidence band until a
+//' desired *pointwise* \ifelse{latex}{\out{$\mathit{\alpha}_{\mathit{p}}$}}{\ifelse{html}{\out{<i>&alpha;</i><sub><i>p</i></sub>}}{*alpha_p*}} exceeding `adapt_alpha` is obtained. Default = `TRUE`.
+//' @param adapt_alpha Optional minimum acceptable value for the *pointwise* \ifelse{latex}{\out{$\mathit{\alpha}_{\mathit{p}}$}}{\ifelse{html}{\out{<i>&alpha;</i><sub><i>p</i></sub>}}{*alpha_p*}} if `adapt` = `TRUE`. Default = `1e-5`.
 //' @param tol_G Optional convergence tolerance for the infinite series
 //' computing the Hall–Wellner² distribution function *G*(*a*, *λ*). Default =
 //' `1e-10`.
@@ -268,10 +275,14 @@ Eigen::MatrixXd WH_ThomasGrunkemeier(const Eigen::VectorXd& time,
 //' @return A numeric matrix with 2 columns: lower limit and upper limit.
 //' @details
 //' The Hollander–McKeague procedure begins with a specified *simultaneous* \ifelse{latex}{\out{$\mathit{\alpha}$}}{\ifelse{html}{\out{<i>&alpha;</i>}}{*alpha*}} and
-//' computes a smaller *pointwise* \ifelse{latex}{\out{$\mathit{\alpha}$}}{\ifelse{html}{\out{<i>&alpha;</i>}}{*alpha*}} such that the resulting *pointwise* confidence
-//' intervals achieve the desired *simultaneous* coverage. Extremely small
-//' *pointwise* \ifelse{latex}{\out{$\mathit{\alpha}$}}{\ifelse{html}{\out{<i>&alpha;</i>}}{*alpha*}} can cause 1 − \ifelse{latex}{\out{$\mathit{\alpha}$}}{\ifelse{html}{\out{<i>&alpha;</i>}}{*alpha*}} to round to 1 in double precision. To prevent
-//' this, *pointwise* \ifelse{latex}{\out{$\mathit{\alpha}$}}{\ifelse{html}{\out{<i>&alpha;</i>}}{*alpha*}} is rounded up to at least half the machine epsilon.
+//' computes a smaller *pointwise* \ifelse{latex}{\out{$\mathit{\alpha}_{\mathit{p}}$}}{\ifelse{html}{\out{<i>&alpha;</i><sub><i>p</i></sub>}}{*alpha_p*}} such that the resulting *pointwise* confidence
+//' intervals achieve the desired *simultaneous* coverage. When the tail of the
+//' survival curve is close to zero, \ifelse{latex}{\out{$\mathit{\alpha}_{\mathit{p}}$}}{\ifelse{html}{\out{<i>&alpha;</i><sub><i>p</i></sub>}}{*alpha_p*}} can become very small and result in an
+//' undesirably wide confidence band. The `adapt` option addresses this by
+//' iteratively excluding the latest remaining event time from the time range of
+//' the confidence band until a desired \ifelse{latex}{\out{$\mathit{\alpha}_{\mathit{p}}$}}{\ifelse{html}{\out{<i>&alpha;</i><sub><i>p</i></sub>}}{*alpha_p*}} exceeding `adapt_alpha` is obtained.
+//' Extremely small \ifelse{latex}{\out{$\mathit{\alpha}_{\mathit{p}}$}}{\ifelse{html}{\out{<i>&alpha;</i><sub><i>p</i></sub>}}{*alpha_p*}} can cause 1 − \ifelse{latex}{\out{$\mathit{\alpha}_{\mathit{p}}$}}{\ifelse{html}{\out{<i>&alpha;</i><sub><i>p</i></sub>}}{*alpha_p*}} to round to 1 in double precision; to
+//' prevent this, \ifelse{latex}{\out{$\mathit{\alpha}_{\mathit{p}}$}}{\ifelse{html}{\out{<i>&alpha;</i><sub><i>p</i></sub>}}{*alpha_p*}} is always rounded up to half the machine epsilon.
 //' @references
 //' 1. Hollander, M. and McKeague, I.W., 1997. Likelihood ratio-based confidence
 //' bands for survival functions. *Journal of the American Statistical
@@ -284,14 +295,43 @@ Eigen::MatrixXd WH_HollanderMcKeague(const Eigen::VectorXd& time,
                                      const Eigen::VectorXi& risk,
                                      const Eigen::VectorXi& event,
                                      double alpha = 0.05, bool verbose = true,
+                                     bool adapt = true, double adapt_alpha = 1e-5,
                                      double tol_G = 1e-10, int maxit_G = 10000,
                                      double tol_K = 1e-10, int maxit_K = 10000) {
-  Eigen::MatrixXd s = WH_HollanderMcKeague_summary(time, risk, event);
-  double alpha_new = WH_HollanderMcKeague_alpha(risk, s.col(0), s.col(1), s.col(2),
-                                                alpha, tol_G, maxit_G, tol_K, maxit_K);
+  if ((event.array() == 0).any()) {
+    throw std::invalid_argument("[WH_HollanderMcKeague] inputs must be at event-time steps, not all-time steps");
+  }
+  Eigen::MatrixXd s = WH_HollanderMcKeague_summary(time, risk, event); // event, surv, SE
+  if (verbose) Rcpp::Rcout << "[WH_HollanderMcKeague] i = 0:" << s.rows() - 1 << std::endl;
+  double alpha_new = -1.0;
+  if (adapt) {
+    while (alpha_new <= adapt_alpha) {
+      try {
+        alpha_new = WH_HollanderMcKeague_alpha(risk, s.col(0), s.col(1), s.col(2), alpha, tol_G, maxit_G, tol_K, maxit_K);
+      } catch (const std::exception&) {
+        alpha_new = -1.0;
+      }
+      if (alpha_new <= adapt_alpha) {
+        if (s.rows() <= 2) {
+          if (verbose) Rcpp::Rcout << "[WH_HollanderMcKeague] \u03b1\u209a = " << alpha_new << std::endl;
+          throw std::runtime_error("[WH_HollanderMcKeague] minimum \u03b1\u209a not reached");
+        }
+        s.conservativeResize(s.rows() - 1, Eigen::NoChange);
+        if (verbose) Rcpp::Rcout << "[WH_HollanderMcKeague] \u03b1\u209a = " << alpha_new << ", retry i = 0:" << s.rows() - 1 << std::endl;
+      }
+    }
+  } else {
+    alpha_new = WH_HollanderMcKeague_alpha(risk, s.col(0), s.col(1), s.col(2), alpha, tol_G, maxit_G, tol_K, maxit_K);
+  }
   if (alpha_new < std::numeric_limits<double>::epsilon() / 2.0) {
     alpha_new = std::numeric_limits<double>::epsilon() / 2.0;
-    if (verbose) Rcpp::Rcout << "[WH_HollanderMcKeague] pointwise \u03b1 rounded up to " << alpha_new << std::endl;
+    if (verbose) Rcpp::Rcout << "[WH_HollanderMcKeague] \u03b1* rounded up to " << alpha_new << std::endl;
   }
-  return WH_ThomasGrunkemeier(time, risk, event, alpha_new);
+  Eigen::MatrixXd output = WH_ThomasGrunkemeier(time, risk, event, alpha_new);
+  if (adapt) {
+    if (output.rows() > s.rows()) {
+      output.block(s.rows(), 0, output.rows() - s.rows(), output.cols()).setConstant(std::numeric_limits<double>::quiet_NaN());
+    }
+  }
+  return output;
 }

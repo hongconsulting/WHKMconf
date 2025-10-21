@@ -1,19 +1,21 @@
 Package: WHKMconf
-Title: Kaplan-Meier confidence intervals and confidence bands
-Version: 0.7.0
+Title: Kaplan-Meier Confidence Intervals and Confidence Bands
+Version: 0.8.0
 Authors@R: 
     person("Wei", "Hong", , "wei.hong@hongconsulting.ai", role = c("aut", "cre"))
-Description: This package re-implements selected pointwise confidence intervals 
-    and simultaneous confidence bands for Kaplan-Meier survival estimates from 
-    the the 'km.ci' package and from the work of Sachs, Brand, and Gabriel 
-    (DOI:10.1038/s41416-022-01920-5) for improved performance. The implemented 
-    Nair confidence bands allows arbitrary confidence levels rather than being 
-    restricted to pre-computed tables of critical values. The implemented 
-    Thomas–Grunkemeier confidence intervals maintain numerical stability at 
-    extremely small alpha values that may arise during the construction of 
-    Hollander–McKeague confidence bands. 'WH' code is designed to maximise 
-    speed, for use in simulation studies. As such, input validation is minimal 
-    and the user is responsible for ensuring valid use.
+Description: Re-implements selected pointwise confidence intervals and 
+    simultaneous confidence bands for Kaplan-Meier survival estimates from the 
+    'km.ci' package and from the work of Sachs, Brand, and Gabriel 
+    (DOI:10.1038/s41416-022-01920-5) for improved performance. The 
+    Hollander-McKeague confidence band implementation includes an 'adapt' option 
+    that automatically shortens the length of the band to prevent excessive 
+    width. The Nair confidence band implementation allows arbitrary confidence 
+    levels rather than being restricted to pre-computed tables of critical 
+    values. The Thomas–Grunkemeier confidence interval implementation maintains 
+    numerical stability at extremely small alpha values that may arise during 
+    the construction of Hollander–McKeague confidence bands. 'WH' code is 
+    designed to maximise speed, for use in simulation studies. As such, input 
+    validation is minimal and the user is responsible for ensuring valid use.
 License: GPL-3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

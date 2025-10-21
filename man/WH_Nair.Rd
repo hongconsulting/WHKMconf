@@ -18,7 +18,7 @@ WH_Nair(
   MC_step = 100000L,
   MC_rep = 100000L,
   MC_seed = 24601L,
-  e_override = 0
+  e_alpha_override = 0
 )
 }
 \arguments{
@@ -56,7 +56,8 @@ Default = \code{1e5}.}
 \item{MC_seed}{Optional random seed for the Monte Carlo fallback. Default =
 \code{24601}.}
 
-\item{e_override}{Optional numeric value overriding the critical value \ifelse{latex}{\out{$\mathit{e}_{\mathit{\alpha}}$}}{\ifelse{html}{\out{<i>e</i><sub><i>&alpha;</i></sub>}}{*e_alpha*}}.}
+\item{e_alpha_override}{Optional numeric value overriding the critical value
+\ifelse{latex}{\out{$\mathit{e}_{\mathit{\alpha}}$}}{\ifelse{html}{\out{<i>e</i><sub><i>&alpha;</i></sub>}}{*e_alpha*}}.}
 }
 \value{
 A numeric matrix with 2 columns: lower limit and upper limit.
@@ -68,9 +69,9 @@ band¹ for the Kaplan–Meier survival estimator at each unique event time.
 \details{
 The equal-precision critical value \ifelse{latex}{\out{$\mathit{e}_{\mathit{\alpha}}$}}{\ifelse{html}{\out{<i>e</i><sub><i>&alpha;</i></sub>}}{*e_alpha*}} is calculated using Borokov–Sycheva
 approximation² (\code{WH_e_alpha()}). This method aligns more closely with
-Monte Carlo simulations using 100,000 Brownian bridge discretization steps
-and 100,000 replicates (\code{WH_e_alpha_MC()}) compared to the pre-computed tables
-published in Klein and Moeschberger (2003)³.
+Monte Carlo simulations using 100,000 variance-stabilized Brownian bridge
+discretization steps and 100,000 replicates (\code{WH_e_alpha_MC()}) compared to
+the pre-computed tables published in Klein and Moeschberger (2003)³.
 }
 \references{
 \enumerate{

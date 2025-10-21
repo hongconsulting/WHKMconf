@@ -7,13 +7,14 @@
 #include "WH_distr_chisq.h"
 #include "WH_HallWellner.h"
 
-//' Hollander–McKeague simultaneous significance level
+
+//' Hollander–McKeague pointwise significance level
 //'
-//' Computes the *simultaneous* \ifelse{latex}{\out{$\mathit{\alpha}$}}{\ifelse{html}{\out{<i>&alpha;</i>}}{*alpha*}} for Hollander–McKeague confidence bands.
+//' Computes the *pointwise* \ifelse{latex}{\out{$\mathit{\alpha}_{\mathit{p}}$}}{\ifelse{html}{\out{<i>&alpha;</i><sub><i>p</i></sub>}}{*alpha_p*}} for Hollander–McKeague confidence bands.
 //' @param risk Integer vector of numbers at risk at each unique event time.
 //' @param event Integer vector of numbers of events at each unique event time.
 //' @param surv Numeric vector of Kaplan–Meier survival estimates at each unique
-//' event time.`.
+//' event time.
 //' @param SE Numeric vector of standard errors for each `surv`.
 //' @param alpha Optional significance level. Default = `0.05`.
 //' @param tol_G Optional convergence tolerance for the infinite series
@@ -27,6 +28,7 @@
 //' @param maxit_K Optional maximum number of iterations for the bisection
 //' root-finding of the Hall–Wellner quantile function *K*(*x*, *a*). Default =
 //' `10000`.
+//' @return The pointwise significance level \ifelse{latex}{\out{$\mathit{\alpha}_{\mathit{p}}$}}{\ifelse{html}{\out{<i>&alpha;</i><sub><i>p</i></sub>}}{*alpha_p*}}.
 //' @references
 //' 1. Hollander, M. and McKeague, I.W., 1997. Likelihood ratio-based confidence
 //' bands for survival functions. *Journal of the American Statistical

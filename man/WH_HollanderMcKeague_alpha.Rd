@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{WH_HollanderMcKeague_alpha}
 \alias{WH_HollanderMcKeague_alpha}
-\title{Hollander–McKeague simultaneous significance level}
+\title{Hollander–McKeague pointwise significance level}
 \usage{
 WH_HollanderMcKeague_alpha(
   risk,
@@ -22,7 +22,7 @@ WH_HollanderMcKeague_alpha(
 \item{event}{Integer vector of numbers of events at each unique event time.}
 
 \item{surv}{Numeric vector of Kaplan–Meier survival estimates at each unique
-event time.`.}
+event time.}
 
 \item{SE}{Numeric vector of standard errors for each \code{surv}.}
 
@@ -43,8 +43,11 @@ of the Hall–Wellner quantile function \emph{K}(\emph{x}, \emph{a}). Default = 
 root-finding of the Hall–Wellner quantile function \emph{K}(\emph{x}, \emph{a}). Default =
 \code{10000}.}
 }
+\value{
+The pointwise significance level \ifelse{latex}{\out{$\mathit{\alpha}_{\mathit{p}}$}}{\ifelse{html}{\out{<i>&alpha;</i><sub><i>p</i></sub>}}{*alpha_p*}}.
+}
 \description{
-Computes the \emph{simultaneous} \ifelse{latex}{\out{$\mathit{\alpha}$}}{\ifelse{html}{\out{<i>&alpha;</i>}}{*alpha*}} for Hollander–McKeague confidence bands.
+Computes the \emph{pointwise} \ifelse{latex}{\out{$\mathit{\alpha}_{\mathit{p}}$}}{\ifelse{html}{\out{<i>&alpha;</i><sub><i>p</i></sub>}}{*alpha_p*}} for Hollander–McKeague confidence bands.
 }
 \references{
 \enumerate{

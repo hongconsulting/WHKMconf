@@ -10,15 +10,23 @@ This package re-implements selected pointwise confidence intervals and
 simultaneous confidence bands for Kaplan–Meier survival estimates from
 the the `km.ci` package and from the work of [Sachs, Brand, and Gabriel
 (2022)](https://doi.org/10.1038/s41416-022-01920-5) for improved
-performance. Differences compared to `km.ci` include:
+performance. Other distinguishing features of `WHKMconf` include:
 
-- Nair confidence bands allows arbitrary confidence levels rather than
-  being restricted to pre-computed tables of $e_{\alpha}$ critical
-  values.
+- [Hollander–McKeague confidence
+  bands](https://hongconsulting.github.io/WHKMconf/reference/WH_HollanderMcKeague.html)
+  include an `adapt` option that automatically shortens the length of
+  the band to prevent excessive width.
 
-- Thomas–Grunkemeier confidence intervals maintain numerical stability
-  at extremely small $\alpha$ values that may arise during the
-  construction of Hollander–McKeague confidence bands.
+- [Nair confidence
+  bands](https://hongconsulting.github.io/WHKMconf/reference/WH_Nair.html)
+  allow arbitrary confidence levels rather than being restricted to
+  pre-computed tables of $e_{\alpha}$ critical values.
+
+- [Thomas–Grunkemeier confidence
+  intervals](https://hongconsulting.github.io/WHKMconf/reference/WH_ThomasGrunkemeier.html)
+  maintain numerical stability at extremely small $\alpha$ values that
+  may arise during the construction of Hollander–McKeague confidence
+  bands.
 
 ‘WH’ code is designed to maximize speed, for use in simulation studies.
 As such, input validation is minimal and the user is responsible for
@@ -42,15 +50,16 @@ data <- data.frame("time" = survival::ovarian$futime, "status" = survival::ovari
 fit <- survival::survfit(survival::Surv(time * 12 / 365.2425, status) ~ 1, data = data)
 s <- summary(fit)
 
-CI <- data.frame("time" = s$time, "surv" = s$surv)
+CI <- data.frame("time" = s$time, "surv" = s$surv, "SE" = s$std.err)
 CI.R <- data.frame(WH_Rothman(s$surv, s$n.risk, s$n.event))
 CI <- cbind(CI, setNames(CI.R, c("Rl", "Ru")))
 CI.TG <- data.frame(WH_ThomasGrunkemeier(s$time, s$n.risk, s$n.event))
 CI <- cbind(CI, setNames(CI.TG, c("TGl", "TGu")))
 CI.N <- data.frame(WH_Nair(s$time, s$surv, s$std.err, s$n.risk, s$n.event))
-#> [WH_Nair] lower = 0.0384615, upper = 0.537895
+#> [WH_Nair] i = 0:11 of 11, lower = 0.0384615, upper = 0.537895
 CI <- cbind(CI, setNames(CI.N, c("Nl", "Nu")))
 CI.HM <- data.frame(WH_HollanderMcKeague(s$time, s$n.risk, s$n.event))
+#> [WH_HollanderMcKeague] i = 0:11
 CI <- cbind(CI, setNames(CI.HM, c("HMl", "HMu")))
 
 t_max <- max(data$time * 12/365.2425)
@@ -78,7 +87,7 @@ legend(legend = c("Rothman", "Thomas\u2013Grunkemeier", "Nair", "Hollander\u2013
        x = 0, y = 0, yjust = 0, xpd = TRUE)
 ```
 
-![](man/figures/README-unnamed-chunk-2-1.png)<!-- -->
+![](man/figures/README-example_1-1.png)<!-- -->
 
 ## Further Reading
 

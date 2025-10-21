@@ -10,6 +10,8 @@ WH_HollanderMcKeague(
   event,
   alpha = 0.05,
   verbose = TRUE,
+  adapt = TRUE,
+  adapt_alpha = 1e-05,
   tol_G = 1e-10,
   maxit_G = 10000L,
   tol_K = 1e-10,
@@ -27,6 +29,12 @@ WH_HollanderMcKeague(
 
 \item{verbose}{Optional logical; if \code{TRUE}, prints additional diagnostic
 information. Default = \code{TRUE}.}
+
+\item{adapt}{Optional logical; if \code{TRUE}, iteratively excludes the latest
+remaining event time from the time range of the confidence band until a
+desired \emph{pointwise} \ifelse{latex}{\out{$\mathit{\alpha}_{\mathit{p}}$}}{\ifelse{html}{\out{<i>&alpha;</i><sub><i>p</i></sub>}}{*alpha_p*}} exceeding \code{adapt_alpha} is obtained. Default = \code{TRUE}.}
+
+\item{adapt_alpha}{Optional minimum acceptable value for the \emph{pointwise} \ifelse{latex}{\out{$\mathit{\alpha}_{\mathit{p}}$}}{\ifelse{html}{\out{<i>&alpha;</i><sub><i>p</i></sub>}}{*alpha_p*}} if \code{adapt} = \code{TRUE}. Default = \code{1e-5}.}
 
 \item{tol_G}{Optional convergence tolerance for the infinite series
 computing the Hall–Wellner² distribution function \emph{G}(\emph{a}, \emph{λ}). Default =
@@ -52,10 +60,14 @@ band¹ for the Kaplan–Meier survival estimator at each unique event time.
 }
 \details{
 The Hollander–McKeague procedure begins with a specified \emph{simultaneous} \ifelse{latex}{\out{$\mathit{\alpha}$}}{\ifelse{html}{\out{<i>&alpha;</i>}}{*alpha*}} and
-computes a smaller \emph{pointwise} \ifelse{latex}{\out{$\mathit{\alpha}$}}{\ifelse{html}{\out{<i>&alpha;</i>}}{*alpha*}} such that the resulting \emph{pointwise} confidence
-intervals achieve the desired \emph{simultaneous} coverage. Extremely small
-\emph{pointwise} \ifelse{latex}{\out{$\mathit{\alpha}$}}{\ifelse{html}{\out{<i>&alpha;</i>}}{*alpha*}} can cause 1 − \ifelse{latex}{\out{$\mathit{\alpha}$}}{\ifelse{html}{\out{<i>&alpha;</i>}}{*alpha*}} to round to 1 in double precision. To prevent
-this, \emph{pointwise} \ifelse{latex}{\out{$\mathit{\alpha}$}}{\ifelse{html}{\out{<i>&alpha;</i>}}{*alpha*}} is rounded up to at least half the machine epsilon.
+computes a smaller \emph{pointwise} \ifelse{latex}{\out{$\mathit{\alpha}_{\mathit{p}}$}}{\ifelse{html}{\out{<i>&alpha;</i><sub><i>p</i></sub>}}{*alpha_p*}} such that the resulting \emph{pointwise} confidence
+intervals achieve the desired \emph{simultaneous} coverage. When the tail of the
+survival curve is close to zero, \ifelse{latex}{\out{$\mathit{\alpha}_{\mathit{p}}$}}{\ifelse{html}{\out{<i>&alpha;</i><sub><i>p</i></sub>}}{*alpha_p*}} can become very small and result in an
+undesirably wide confidence band. The \code{adapt} option addresses this by
+iteratively excluding the latest remaining event time from the time range of
+the confidence band until a desired \ifelse{latex}{\out{$\mathit{\alpha}_{\mathit{p}}$}}{\ifelse{html}{\out{<i>&alpha;</i><sub><i>p</i></sub>}}{*alpha_p*}} exceeding \code{adapt_alpha} is obtained.
+Extremely small \ifelse{latex}{\out{$\mathit{\alpha}_{\mathit{p}}$}}{\ifelse{html}{\out{<i>&alpha;</i><sub><i>p</i></sub>}}{*alpha_p*}} can cause 1 − \ifelse{latex}{\out{$\mathit{\alpha}_{\mathit{p}}$}}{\ifelse{html}{\out{<i>&alpha;</i><sub><i>p</i></sub>}}{*alpha_p*}} to round to 1 in double precision; to
+prevent this, \ifelse{latex}{\out{$\mathit{\alpha}_{\mathit{p}}$}}{\ifelse{html}{\out{<i>&alpha;</i><sub><i>p</i></sub>}}{*alpha_p*}} is always rounded up to half the machine epsilon.
 }
 \references{
 \enumerate{

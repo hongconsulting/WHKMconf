@@ -9,7 +9,7 @@ band¹ for the Kaplan–Meier survival estimator at each unique event time."></h
 
     <a class="navbar-brand me-2" href="../index.html">WHKMconf</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,6 +47,8 @@ band¹ for the Kaplan–Meier survival estimator at each unique event time.</p>
 <span>  <span class="va">event</span>,</span>
 <span>  alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  adapt <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  adapt_alpha <span class="op">=</span> <span class="fl">1e-05</span>,</span>
 <span>  tol_G <span class="op">=</span> <span class="fl">1e-10</span>,</span>
 <span>  maxit_G <span class="op">=</span> <span class="fl">10000L</span>,</span>
 <span>  tol_K <span class="op">=</span> <span class="fl">1e-10</span>,</span>
@@ -79,6 +81,16 @@ band¹ for the Kaplan–Meier survival estimator at each unique event time.</p>
 information. Default = <code>TRUE</code>.</p></dd>
 
 
+<dt id="arg-adapt">adapt<a class="anchor" aria-label="anchor" href="#arg-adapt"></a></dt>
+<dd><p>Optional logical; if <code>TRUE</code>, iteratively excludes the latest
+remaining event time from the time range of the confidence band until a
+desired <em>pointwise</em> <i>α</i><sub><i>p</i></sub> exceeding <code>adapt_alpha</code> is obtained. Default = <code>TRUE</code>.</p></dd>
+
+
+<dt id="arg-adapt-alpha">adapt_alpha<a class="anchor" aria-label="anchor" href="#arg-adapt-alpha"></a></dt>
+<dd><p>Optional minimum acceptable value for the <em>pointwise</em> <i>α</i><sub><i>p</i></sub> if <code>adapt</code> = <code>TRUE</code>. Default = <code>1e-5</code>.</p></dd>
+
+
 <dt id="arg-tol-g">tol_G<a class="anchor" aria-label="anchor" href="#arg-tol-g"></a></dt>
 <dd><p>Optional convergence tolerance for the infinite series
 computing the Hall–Wellner² distribution function <em>G</em>(<em>a</em>, <em>λ</em>). Default =
@@ -109,10 +121,14 @@ root-finding of the Hall–Wellner quantile function <em>K</em>(<em>x</em>, <em>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The Hollander–McKeague procedure begins with a specified <em>simultaneous</em> <i>α</i> and
-computes a smaller <em>pointwise</em> <i>α</i> such that the resulting <em>pointwise</em> confidence
-intervals achieve the desired <em>simultaneous</em> coverage. Extremely small
-<em>pointwise</em> <i>α</i> can cause 1 − <i>α</i> to round to 1 in double precision. To prevent
-this, <em>pointwise</em> <i>α</i> is rounded up to at least half the machine epsilon.</p>
+computes a smaller <em>pointwise</em> <i>α</i><sub><i>p</i></sub> such that the resulting <em>pointwise</em> confidence
+intervals achieve the desired <em>simultaneous</em> coverage. When the tail of the
+survival curve is close to zero, <i>α</i><sub><i>p</i></sub> can become very small and result in an
+undesirably wide confidence band. The <code>adapt</code> option addresses this by
+iteratively excluding the latest remaining event time from the time range of
+the confidence band until a desired <i>α</i><sub><i>p</i></sub> exceeding <code>adapt_alpha</code> is obtained.
+Extremely small <i>α</i><sub><i>p</i></sub> can cause 1 − <i>α</i><sub><i>p</i></sub> to round to 1 in double precision; to
+prevent this, <i>α</i><sub><i>p</i></sub> is always rounded up to half the machine epsilon.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>

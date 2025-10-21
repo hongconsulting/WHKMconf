@@ -13,7 +13,7 @@ WH_ThomasGrunkemeier(time, risk, event, alpha = 0.05)
 
 \item{event}{Integer vector of numbers of events at each \code{time}.}
 
-\item{alpha}{Significance level. Default = \code{0.05}.}
+\item{alpha}{Optional significance level. Default = \code{0.05}.}
 }
 \value{
 A numeric matrix with 2 columns: lower limit and upper limit.

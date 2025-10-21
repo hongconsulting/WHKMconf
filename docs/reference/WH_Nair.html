@@ -9,7 +9,7 @@ band¹ for the Kaplan–Meier survival estimator at each unique event time."></h
 
     <a class="navbar-brand me-2" href="../index.html">WHKMconf</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,7 +55,7 @@ band¹ for the Kaplan–Meier survival estimator at each unique event time.</p>
 <span>  MC_step <span class="op">=</span> <span class="fl">100000L</span>,</span>
 <span>  MC_rep <span class="op">=</span> <span class="fl">100000L</span>,</span>
 <span>  MC_seed <span class="op">=</span> <span class="fl">24601L</span>,</span>
-<span>  e_override <span class="op">=</span> <span class="fl">0</span></span>
+<span>  e_alpha_override <span class="op">=</span> <span class="fl">0</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -123,8 +123,9 @@ Default = <code>1e5</code>.</p></dd>
 <code>24601</code>.</p></dd>
 
 
-<dt id="arg-e-override">e_override<a class="anchor" aria-label="anchor" href="#arg-e-override"></a></dt>
-<dd><p>Optional numeric value overriding the critical value <i>e</i><sub><i>α</i></sub>.</p></dd>
+<dt id="arg-e-alpha-override">e_alpha_override<a class="anchor" aria-label="anchor" href="#arg-e-alpha-override"></a></dt>
+<dd><p>Optional numeric value overriding the critical value
+<i>e</i><sub><i>α</i></sub>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -135,9 +136,9 @@ Default = <code>1e5</code>.</p></dd>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The equal-precision critical value <i>e</i><sub><i>α</i></sub> is calculated using Borokov–Sycheva
 approximation² (<code><a href="WH_e_alpha.html">WH_e_alpha()</a></code>). This method aligns more closely with
-Monte Carlo simulations using 100,000 Brownian bridge discretization steps
-and 100,000 replicates (<code><a href="WH_e_alpha_MC.html">WH_e_alpha_MC()</a></code>) compared to the pre-computed tables
-published in Klein and Moeschberger (2003)³.</p>
+Monte Carlo simulations using 100,000 variance-stabilized Brownian bridge
+discretization steps and 100,000 replicates (<code><a href="WH_e_alpha_MC.html">WH_e_alpha_MC()</a></code>) compared to
+the pre-computed tables published in Klein and Moeschberger (2003)³.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>

@@ -12,8 +12,8 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // WH_Nair
-Eigen::MatrixXd WH_Nair(const Eigen::VectorXd& time, const Eigen::VectorXd& surv, const Eigen::VectorXd& SE, const Eigen::VectorXi& risk, const Eigen::VectorXi& event, double alpha, bool verbose, double tol, int maxit, bool adapt, int MC_step, int MC_rep, int MC_seed, double e_override);
-RcppExport SEXP _WHKMconf_WH_Nair(SEXP timeSEXP, SEXP survSEXP, SEXP SESEXP, SEXP riskSEXP, SEXP eventSEXP, SEXP alphaSEXP, SEXP verboseSEXP, SEXP tolSEXP, SEXP maxitSEXP, SEXP adaptSEXP, SEXP MC_stepSEXP, SEXP MC_repSEXP, SEXP MC_seedSEXP, SEXP e_overrideSEXP) {
+Eigen::MatrixXd WH_Nair(const Eigen::VectorXd& time, const Eigen::VectorXd& surv, const Eigen::VectorXd& SE, const Eigen::VectorXi& risk, const Eigen::VectorXi& event, double alpha, bool verbose, double tol, int maxit, bool adapt, int MC_step, int MC_rep, int MC_seed, double e_alpha_override);
+RcppExport SEXP _WHKMconf_WH_Nair(SEXP timeSEXP, SEXP survSEXP, SEXP SESEXP, SEXP riskSEXP, SEXP eventSEXP, SEXP alphaSEXP, SEXP verboseSEXP, SEXP tolSEXP, SEXP maxitSEXP, SEXP adaptSEXP, SEXP MC_stepSEXP, SEXP MC_repSEXP, SEXP MC_seedSEXP, SEXP e_alpha_overrideSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -30,8 +30,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type MC_step(MC_stepSEXP);
     Rcpp::traits::input_parameter< int >::type MC_rep(MC_repSEXP);
     Rcpp::traits::input_parameter< int >::type MC_seed(MC_seedSEXP);
-    Rcpp::traits::input_parameter< double >::type e_override(e_overrideSEXP);
-    rcpp_result_gen = Rcpp::wrap(WH_Nair(time, surv, SE, risk, event, alpha, verbose, tol, maxit, adapt, MC_step, MC_rep, MC_seed, e_override));
+    Rcpp::traits::input_parameter< double >::type e_alpha_override(e_alpha_overrideSEXP);
+    rcpp_result_gen = Rcpp::wrap(WH_Nair(time, surv, SE, risk, event, alpha, verbose, tol, maxit, adapt, MC_step, MC_rep, MC_seed, e_alpha_override));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -64,8 +64,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // WH_HollanderMcKeague
-Eigen::MatrixXd WH_HollanderMcKeague(const Eigen::VectorXd& time, const Eigen::VectorXi& risk, const Eigen::VectorXi& event, double alpha, bool verbose, double tol_G, int maxit_G, double tol_K, int maxit_K);
-RcppExport SEXP _WHKMconf_WH_HollanderMcKeague(SEXP timeSEXP, SEXP riskSEXP, SEXP eventSEXP, SEXP alphaSEXP, SEXP verboseSEXP, SEXP tol_GSEXP, SEXP maxit_GSEXP, SEXP tol_KSEXP, SEXP maxit_KSEXP) {
+Eigen::MatrixXd WH_HollanderMcKeague(const Eigen::VectorXd& time, const Eigen::VectorXi& risk, const Eigen::VectorXi& event, double alpha, bool verbose, bool adapt, double adapt_alpha, double tol_G, int maxit_G, double tol_K, int maxit_K);
+RcppExport SEXP _WHKMconf_WH_HollanderMcKeague(SEXP timeSEXP, SEXP riskSEXP, SEXP eventSEXP, SEXP alphaSEXP, SEXP verboseSEXP, SEXP adaptSEXP, SEXP adapt_alphaSEXP, SEXP tol_GSEXP, SEXP maxit_GSEXP, SEXP tol_KSEXP, SEXP maxit_KSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -74,11 +74,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const Eigen::VectorXi& >::type event(eventSEXP);
     Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
+    Rcpp::traits::input_parameter< bool >::type adapt(adaptSEXP);
+    Rcpp::traits::input_parameter< double >::type adapt_alpha(adapt_alphaSEXP);
     Rcpp::traits::input_parameter< double >::type tol_G(tol_GSEXP);
     Rcpp::traits::input_parameter< int >::type maxit_G(maxit_GSEXP);
     Rcpp::traits::input_parameter< double >::type tol_K(tol_KSEXP);
     Rcpp::traits::input_parameter< int >::type maxit_K(maxit_KSEXP);
-    rcpp_result_gen = Rcpp::wrap(WH_HollanderMcKeague(time, risk, event, alpha, verbose, tol_G, maxit_G, tol_K, maxit_K));
+    rcpp_result_gen = Rcpp::wrap(WH_HollanderMcKeague(time, risk, event, alpha, verbose, adapt, adapt_alpha, tol_G, maxit_G, tol_K, maxit_K));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -137,7 +139,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_WHKMconf_WH_Nair", (DL_FUNC) &_WHKMconf_WH_Nair, 14},
     {"_WHKMconf_WH_Rothman", (DL_FUNC) &_WHKMconf_WH_Rothman, 4},
     {"_WHKMconf_WH_ThomasGrunkemeier", (DL_FUNC) &_WHKMconf_WH_ThomasGrunkemeier, 4},
-    {"_WHKMconf_WH_HollanderMcKeague", (DL_FUNC) &_WHKMconf_WH_HollanderMcKeague, 9},
+    {"_WHKMconf_WH_HollanderMcKeague", (DL_FUNC) &_WHKMconf_WH_HollanderMcKeague, 11},
     {"_WHKMconf_WH_HollanderMcKeague_alpha", (DL_FUNC) &_WHKMconf_WH_HollanderMcKeague_alpha, 9},
     {"_WHKMconf_WH_e_alpha", (DL_FUNC) &_WHKMconf_WH_e_alpha, 5},
     {"_WHKMconf_WH_e_alpha_MC", (DL_FUNC) &_WHKMconf_WH_e_alpha_MC, 6},
