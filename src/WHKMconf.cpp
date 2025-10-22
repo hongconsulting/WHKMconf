@@ -259,8 +259,8 @@ Eigen::MatrixXd WH_ThomasGrunkemeier(const Eigen::VectorXd& time,
 //' information. Default = `TRUE`.
 //' @param adapt Optional logical; if `TRUE`, iteratively excludes the latest
 //' remaining event time from the time range of the confidence band until a
-//' desired *pointwise* \ifelse{latex}{\out{$\mathit{\alpha}_{\mathit{p}}$}}{\ifelse{html}{\out{<i>&alpha;</i><sub><i>p</i></sub>}}{*alpha_p*}} exceeding `adapt_alpha` is obtained. Default = `TRUE`.
-//' @param adapt_alpha Optional minimum acceptable value for the *pointwise* \ifelse{latex}{\out{$\mathit{\alpha}_{\mathit{p}}$}}{\ifelse{html}{\out{<i>&alpha;</i><sub><i>p</i></sub>}}{*alpha_p*}} if `adapt` = `TRUE`. Default = `1e-5`.
+//' desired *pointwise* \ifelse{latex}{\out{$\mathit{\alpha}_{\mathit{p}}$}}{\ifelse{html}{\out{<i>&alpha;</i><sub><i>p</i></sub>}}{*alpha_p*}} exceeding `adapt_alpha` is obtained. Default = `FALSE`.
+//' @param adapt_alpha Optional minimum acceptable value for the *pointwise* \ifelse{latex}{\out{$\mathit{\alpha}_{\mathit{p}}$}}{\ifelse{html}{\out{<i>&alpha;</i><sub><i>p</i></sub>}}{*alpha_p*}} if `adapt` = `TRUE`. Default = `0.001`.
 //' @param tol_G Optional convergence tolerance for the infinite series
 //' computing the Hall–Wellner² distribution function *G*(*a*, *λ*). Default =
 //' `1e-10`.
@@ -295,7 +295,7 @@ Eigen::MatrixXd WH_HollanderMcKeague(const Eigen::VectorXd& time,
                                      const Eigen::VectorXi& risk,
                                      const Eigen::VectorXi& event,
                                      double alpha = 0.05, bool verbose = true,
-                                     bool adapt = true, double adapt_alpha = 1e-5,
+                                     bool adapt = false, double adapt_alpha = 0.001,
                                      double tol_G = 1e-10, int maxit_G = 10000,
                                      double tol_K = 1e-10, int maxit_K = 10000) {
   if ((event.array() == 0).any()) {

@@ -9,7 +9,7 @@ band¹ for the Kaplan–Meier survival estimator at each unique event time."></h
 
     <a class="navbar-brand me-2" href="../index.html">WHKMconf</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,8 +47,8 @@ band¹ for the Kaplan–Meier survival estimator at each unique event time.</p>
 <span>  <span class="va">event</span>,</span>
 <span>  alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  adapt <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  adapt_alpha <span class="op">=</span> <span class="fl">1e-05</span>,</span>
+<span>  adapt <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  adapt_alpha <span class="op">=</span> <span class="fl">0.001</span>,</span>
 <span>  tol_G <span class="op">=</span> <span class="fl">1e-10</span>,</span>
 <span>  maxit_G <span class="op">=</span> <span class="fl">10000L</span>,</span>
 <span>  tol_K <span class="op">=</span> <span class="fl">1e-10</span>,</span>
@@ -84,11 +84,11 @@ information. Default = <code>TRUE</code>.</p></dd>
 <dt id="arg-adapt">adapt<a class="anchor" aria-label="anchor" href="#arg-adapt"></a></dt>
 <dd><p>Optional logical; if <code>TRUE</code>, iteratively excludes the latest
 remaining event time from the time range of the confidence band until a
-desired <em>pointwise</em> <i>α</i><sub><i>p</i></sub> exceeding <code>adapt_alpha</code> is obtained. Default = <code>TRUE</code>.</p></dd>
+desired <em>pointwise</em> <i>α</i><sub><i>p</i></sub> exceeding <code>adapt_alpha</code> is obtained. Default = <code>FALSE</code>.</p></dd>
 
 
 <dt id="arg-adapt-alpha">adapt_alpha<a class="anchor" aria-label="anchor" href="#arg-adapt-alpha"></a></dt>
-<dd><p>Optional minimum acceptable value for the <em>pointwise</em> <i>α</i><sub><i>p</i></sub> if <code>adapt</code> = <code>TRUE</code>. Default = <code>1e-5</code>.</p></dd>
+<dd><p>Optional minimum acceptable value for the <em>pointwise</em> <i>α</i><sub><i>p</i></sub> if <code>adapt</code> = <code>TRUE</code>. Default = <code>0.001</code>.</p></dd>
 
 
 <dt id="arg-tol-g">tol_G<a class="anchor" aria-label="anchor" href="#arg-tol-g"></a></dt>

@@ -10,8 +10,8 @@ WH_HollanderMcKeague(
   event,
   alpha = 0.05,
   verbose = TRUE,
-  adapt = TRUE,
-  adapt_alpha = 1e-05,
+  adapt = FALSE,
+  adapt_alpha = 0.001,
   tol_G = 1e-10,
   maxit_G = 10000L,
   tol_K = 1e-10,
@@ -32,9 +32,9 @@ information. Default = \code{TRUE}.}
 
 \item{adapt}{Optional logical; if \code{TRUE}, iteratively excludes the latest
 remaining event time from the time range of the confidence band until a
-desired \emph{pointwise} \ifelse{latex}{\out{$\mathit{\alpha}_{\mathit{p}}$}}{\ifelse{html}{\out{<i>&alpha;</i><sub><i>p</i></sub>}}{*alpha_p*}} exceeding \code{adapt_alpha} is obtained. Default = \code{TRUE}.}
+desired \emph{pointwise} \ifelse{latex}{\out{$\mathit{\alpha}_{\mathit{p}}$}}{\ifelse{html}{\out{<i>&alpha;</i><sub><i>p</i></sub>}}{*alpha_p*}} exceeding \code{adapt_alpha} is obtained. Default = \code{FALSE}.}
 
-\item{adapt_alpha}{Optional minimum acceptable value for the \emph{pointwise} \ifelse{latex}{\out{$\mathit{\alpha}_{\mathit{p}}$}}{\ifelse{html}{\out{<i>&alpha;</i><sub><i>p</i></sub>}}{*alpha_p*}} if \code{adapt} = \code{TRUE}. Default = \code{1e-5}.}
+\item{adapt_alpha}{Optional minimum acceptable value for the \emph{pointwise} \ifelse{latex}{\out{$\mathit{\alpha}_{\mathit{p}}$}}{\ifelse{html}{\out{<i>&alpha;</i><sub><i>p</i></sub>}}{*alpha_p*}} if \code{adapt} = \code{TRUE}. Default = \code{0.001}.}
 
 \item{tol_G}{Optional convergence tolerance for the infinite series
 computing the Hall–Wellner² distribution function \emph{G}(\emph{a}, \emph{λ}). Default =

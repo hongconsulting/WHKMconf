@@ -97,8 +97,8 @@ WH_ThomasGrunkemeier <- function(time, risk, event, alpha = 0.05) {
 #' information. Default = `TRUE`.
 #' @param adapt Optional logical; if `TRUE`, iteratively excludes the latest
 #' remaining event time from the time range of the confidence band until a
-#' desired *pointwise* \ifelse{latex}{\out{$\mathit{\alpha}_{\mathit{p}}$}}{\ifelse{html}{\out{<i>&alpha;</i><sub><i>p</i></sub>}}{*alpha_p*}} exceeding `adapt_alpha` is obtained. Default = `TRUE`.
-#' @param adapt_alpha Optional minimum acceptable value for the *pointwise* \ifelse{latex}{\out{$\mathit{\alpha}_{\mathit{p}}$}}{\ifelse{html}{\out{<i>&alpha;</i><sub><i>p</i></sub>}}{*alpha_p*}} if `adapt` = `TRUE`. Default = `1e-5`.
+#' desired *pointwise* \ifelse{latex}{\out{$\mathit{\alpha}_{\mathit{p}}$}}{\ifelse{html}{\out{<i>&alpha;</i><sub><i>p</i></sub>}}{*alpha_p*}} exceeding `adapt_alpha` is obtained. Default = `FALSE`.
+#' @param adapt_alpha Optional minimum acceptable value for the *pointwise* \ifelse{latex}{\out{$\mathit{\alpha}_{\mathit{p}}$}}{\ifelse{html}{\out{<i>&alpha;</i><sub><i>p</i></sub>}}{*alpha_p*}} if `adapt` = `TRUE`. Default = `0.001`.
 #' @param tol_G Optional convergence tolerance for the infinite series
 #' computing the Hall–Wellner² distribution function *G*(*a*, *λ*). Default =
 #' `1e-10`.
@@ -128,7 +128,7 @@ WH_ThomasGrunkemeier <- function(time, risk, event, alpha = 0.05) {
 #' 2. Hall, W.J. and Wellner, J.A., 1980. Confidence bands for a survival curve
 #' from censored data. *Biometrika*, 67(1), pp. 133–143.
 #' @export
-WH_HollanderMcKeague <- function(time, risk, event, alpha = 0.05, verbose = TRUE, adapt = TRUE, adapt_alpha = 1e-5, tol_G = 1e-10, maxit_G = 10000L, tol_K = 1e-10, maxit_K = 10000L) {
+WH_HollanderMcKeague <- function(time, risk, event, alpha = 0.05, verbose = TRUE, adapt = FALSE, adapt_alpha = 0.001, tol_G = 1e-10, maxit_G = 10000L, tol_K = 1e-10, maxit_K = 10000L) {
     .Call(`_WHKMconf_WH_HollanderMcKeague`, time, risk, event, alpha, verbose, adapt, adapt_alpha, tol_G, maxit_G, tol_K, maxit_K)
 }
 
