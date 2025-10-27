@@ -16,7 +16,7 @@ WH_ThomasGrunkemeier(time, risk, event, alpha = 0.05)
 \item{alpha}{Optional significance level. Default = \code{0.05}.}
 }
 \value{
-A numeric matrix with 2 columns: lower limit and upper limit.
+A numeric matrix with 3 columns: time, lower limit, and upper limit.
 }
 \description{
 Computes Thomas–Grunkemeier likelihood-ratio pointwise confidence intervals¹

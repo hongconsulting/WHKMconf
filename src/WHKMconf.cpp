@@ -10,6 +10,30 @@
 #include "WH_ThomasGrunkemeier_P.h"
 #include "WH_unique.h"
 
+//' Kaplan–Meier median survival confidence limits
+//'
+//' Confidence limits for median survival based on the times at which the
+//' confidence limits of the survival function cross 0.5¹.
+//' @param input A numeric matrix with 3 columns: time, lower limit, and upper
+//' limit.
+//' @return A numeric matrix with 2 columns: lower limit and upper limit. `NaN`
+//' indicates that the median is not reached.
+//' @references
+//' 1. Brookmeyer, R. and Crowley, J., 1982. A confidence interval for the
+//' median survival time. *Biometrics*, pp. 29–41.
+//' @export
+// [[Rcpp::export]]
+Eigen::VectorXd WH_KMconf_med(const Eigen::MatrixXd& input) {
+  Eigen::VectorXd output(2);
+  output.setConstant(std::numeric_limits<double>::quiet_NaN());
+  int n = input.rows();
+  for (int i = 1; i < n; ++i) {
+    if (input(i - 1, 1) >= 0.5 && input(i, 1) < 0.5) output(0) = input(i, 0);
+    if (input(i - 1, 2) >= 0.5 && input(i, 2) < 0.5) output(1) = input(i, 0);
+  }
+  return output;
+}
+
 Eigen::MatrixXd WH_KMexpand(const Eigen::VectorXd& time, const Eigen::VectorXi& risk, const Eigen::VectorXi& event) {
   int n = time.size();
   Eigen::VectorXi lost(n);
@@ -31,6 +55,139 @@ Eigen::MatrixXd WH_KMexpand(const Eigen::VectorXd& time, const Eigen::VectorXi& 
       ++index;
     }
   }
+  return output;
+}
+
+//' Nair confidence bands
+//'
+//' Computes the Nair's log-transformed equal-precision simultaneous confidence
+//' band¹ for the Kaplan–Meier survival estimator at each unique event time.
+//' @param time Numeric vector of unique event times.
+//' @param surv Numeric vector of Kaplan–Meier survival estimates at each `time`.
+//' @param SE Numeric vector of standard errors for each `surv`.
+//' @param risk Integer vector of numbers at risk at each `time`.
+//' @param event Integer vector of numbers of events at each `time`.
+//' @param alpha Optional significance level. Default = `0.05`.
+//' @param verbose Optional logical; if `TRUE`, prints additional diagnostic
+//' information. Default = `TRUE`.
+//' @param tol Optional convergence tolerance for the Borokov–Sycheva
+//' approximation. Default = `1e-10`.
+//' @param maxit Optional maximum number of iterations for the Borokov–Sycheva
+//' approximation. Default = `10000`.
+//' @param adapt Optional logical; if `TRUE`, computation of \ifelse{latex}{\out{$\mathit{e}_{\mathit{\alpha}}$}}{\ifelse{html}{\out{<i>e</i><sub><i>&alpha;</i></sub>}}{*e_alpha*}} automatically
+//' falls back to the Monte Carlo method if the Borokov–Sycheva approximation
+//' fails to converge. Default = `TRUE`.
+//' @param MC_step Optional number of variance-stabilized Brownian bridge
+//' discretization steps for the Monte Carlo fallback. Default = `1e5`.
+//' @param MC_rep Optional number of replicates for the Monte Carlo fallback.
+//' Default = `1e5`.
+//' @param MC_seed Optional random seed for the Monte Carlo fallback. Default =
+//' `24601`.
+//' @param e_alpha_override Optional numeric value overriding the critical value
+//' \ifelse{latex}{\out{$\mathit{e}_{\mathit{\alpha}}$}}{\ifelse{html}{\out{<i>e</i><sub><i>&alpha;</i></sub>}}{*e_alpha*}}.
+//' @return A numeric matrix with 3 columns: time, lower limit, and upper limit.
+//' @details
+//' The equal-precision critical value \ifelse{latex}{\out{$\mathit{e}_{\mathit{\alpha}}$}}{\ifelse{html}{\out{<i>e</i><sub><i>&alpha;</i></sub>}}{*e_alpha*}} is calculated using Borokov–Sycheva
+//' approximation² (`WH_e_alpha()`). This method aligns more closely with
+//' Monte Carlo simulations using 100,000 variance-stabilized Brownian bridge
+//' discretization steps and 100,000 replicates (`WH_e_alpha_MC()`) compared to
+//' the pre-computed tables published in Klein and Moeschberger (2003)³.
+//' @references
+//' 1. Nair, V.N., 1984. Conﬁdence bands for survival functions with censored
+//' data: a comparative study. *Technometrics*, 26, pp. 265–275.
+//' 2. Borokov, A.A. and Sycheva, N.M., 1968. On asymptotically optimal
+//' non-parametric criteria. *Theory of Probability & Its Applications*, 13(3),
+//' pp. 359–393.
+//' 3. Klein, J.P. and Moeschberger, M.L., 2003. Appendix C: Statistical Tables.
+//' In *Survival Analysis: Techniques for Censored and Truncated Data*, pp.
+//' 455–482. New York: Springer New York.
+//' @export
+// [[Rcpp::export]]
+Eigen::MatrixXd WH_Nair(const Eigen::VectorXd& time, const Eigen::VectorXd& surv,
+                        const Eigen::VectorXd& SE, const Eigen::VectorXi& risk,
+                        const Eigen::VectorXi& event, double alpha = 0.05,
+                        bool verbose = true, double tol = 1e-10, int maxit = 10000,
+                        bool adapt = true, int MC_step = 1e5, int MC_rep = 1e5,
+                        int MC_seed = 24601, double e_alpha_override = 0.0) {
+  if ((event.array() == 0).any()) {
+    throw std::invalid_argument("[WH_Nair] inputs must be at event-time steps, not all-time steps");
+  }
+  int n_step = surv.size();
+  int i_first = 0;
+  while (i_first < n_step && (SE(i_first) == 0.0 || std::isnan(SE(i_first)))) ++i_first;
+  int i_last = n_step - 1;
+  while (i_last > i_first && (SE(i_last) == 0.0 || std::isnan(SE(i_last)))) --i_last;
+  double n = risk[0];
+  Eigen::VectorXd variance = (SE.array() / surv.array()).square();
+  double variance_lower = variance(i_first);
+  double variance_upper = variance(i_last);
+  double lower = n * variance_lower / (1.0 + n * variance_lower);
+  double upper = n * variance_upper / (1.0 + n * variance_upper);
+  double e;
+  if (e_alpha_override != 0.0) {
+    e = e_alpha_override;
+  } else {
+    if (verbose) Rcpp::Rcout << "[WH_Nair] i = " << i_first << ":" << i_last << " of " << n_step - 1 << ", lower = " << lower << ", upper = " << upper << std::endl;
+    if (adapt) {
+      try {
+        e = WH_e_alpha(lower, upper, alpha, tol, maxit);
+      } catch (const std::exception&) {
+        if (verbose) Rcpp::Rcout << "[WH_Nair] Monte Carlo fallback" << std::endl;
+        e = WH_e_alpha_MC(lower, upper, alpha, MC_step, MC_rep, MC_seed);
+      }
+    } else {
+      e = WH_e_alpha(lower, upper, alpha, tol, maxit);
+    }
+  }
+  Eigen::VectorXd D = ((e * variance.array().sqrt()) / surv.array().log()).exp();
+  Eigen::MatrixXd output(surv.size(), 3);
+  output.col(0) = time;
+  output.col(1) = surv.array().pow(1.0 / D.array());
+  output.col(2) = surv.array().pow(D.array());
+  return output;
+}
+
+//' Rothman confidence intervals
+//'
+//' Computes Rothman binomial pointwise confidence intervals¹ for the
+//' Kaplan–Meier survival estimator at each unique event time.
+//' @param time Numeric vector of unique event times.
+//' @param surv Numeric vector of Kaplan–Meier survival estimates at each `time`.
+//' @param risk Integer vector of numbers at risk at each `time`.
+//' @param event Integer vector of numbers of events at each `time`.
+//' @param alpha Optional significance level. Default = `0.05`.
+//' @return A numeric matrix with 3 columns: time, lower limit, and upper limit.
+//' @references
+//' 1. Rothman, K.J., 1978. Estimation of confidence limits for the cumulative
+//' probability of survival in life table analysis. *Journal of Chronic Diseases*,
+//' 31(8), pp. 557–560.
+//' @export
+// [[Rcpp::export]]
+Eigen::MatrixXd WH_Rothman(const Eigen::VectorXd& time, const Eigen::VectorXd& surv,
+                           const Eigen::VectorXi& risk, const Eigen::VectorXi& event,
+                           double alpha = 0.05) {
+  if ((event.array() == 0).any()) {
+    throw std::invalid_argument("[WH_Rothman] inputs must be at event-time steps, not all-time steps");
+  }
+  int n = surv.size();
+  double Z = WH_qstdnorm(1.0 - 0.5 * alpha);
+  double Z2 = Z * Z;
+  Eigen::VectorXd risk_d = risk.cast<double>();
+  Eigen::VectorXd event_d = event.cast<double>();
+  Eigen::VectorXd Greenwood = event_d.array() / (risk_d.array() * (risk_d.array() - event_d.array()));
+  Eigen::VectorXd Greenwood_cumsum = Greenwood;
+  for (int i = 1; i < n; ++i) Greenwood_cumsum(i) += Greenwood_cumsum(i - 1);
+  Eigen::VectorXd variance = Greenwood_cumsum.array() * surv.array().square();
+  Eigen::VectorXd n_null = surv.array() * (1.0 - surv.array()) / variance.array();
+  Eigen::VectorXd term = Z2 / (4.0 * n_null.array().square());
+  Eigen::VectorXd root = (variance.array() + term.array()).sqrt();
+  Eigen::VectorXd scale = n_null.array() / (n_null.array() + Z2);
+  Eigen::VectorXd upper = scale.array() * (surv.array() + Z2 / (2.0 * n_null.array()) + Z * root.array());
+  Eigen::VectorXd lower = scale.array() * (surv.array() + Z2 / (2.0 * n_null.array()) - Z * root.array());
+  Eigen::MatrixXd output(n, 3);
+  output.col(0) = time;
+  output.col(1) = lower;
+  output.col(2) = upper;
   return output;
 }
 
@@ -70,141 +227,7 @@ Eigen::VectorXd WH_ThomasGrunkemeier_CI(const Eigen::VectorXd& time,
   return output;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-
-//' Nair confidence bands
-//'
-//' Computes the Nair's log-transformed equal-precision simultaneous confidence
-//' band¹ for the Kaplan–Meier survival estimator at each unique event time.
-//' @param time Numeric vector of unique event times.
-//' @param surv Numeric vector of Kaplan–Meier survival estimates at each `time`.
-//' @param SE Numeric vector of standard errors for each `surv`.
-//' @param risk Integer vector of numbers at risk at each `time`.
-//' @param event Integer vector of numbers of events at each `time`.
-//' @param alpha Optional significance level. Default = `0.05`.
-//' @param verbose Optional logical; if `TRUE`, prints additional diagnostic
-//' information. Default = `TRUE`.
-//' @param tol Optional convergence tolerance for the Borokov–Sycheva
-//' approximation. Default = `1e-10`.
-//' @param maxit Optional maximum number of iterations for the Borokov–Sycheva
-//' approximation. Default = `10000`.
-//' @param adapt Optional logical; if `TRUE`, computation of \ifelse{latex}{\out{$\mathit{e}_{\mathit{\alpha}}$}}{\ifelse{html}{\out{<i>e</i><sub><i>&alpha;</i></sub>}}{*e_alpha*}} automatically
-//' falls back to the Monte Carlo method if the Borokov–Sycheva approximation
-//' fails to converge. Default = `TRUE`.
-//' @param MC_step Optional number of variance-stabilized Brownian bridge
-//' discretization steps for the Monte Carlo fallback. Default = `1e5`.
-//' @param MC_rep Optional number of replicates for the Monte Carlo fallback.
-//' Default = `1e5`.
-//' @param MC_seed Optional random seed for the Monte Carlo fallback. Default =
-//' `24601`.
-//' @param e_alpha_override Optional numeric value overriding the critical value
-//' \ifelse{latex}{\out{$\mathit{e}_{\mathit{\alpha}}$}}{\ifelse{html}{\out{<i>e</i><sub><i>&alpha;</i></sub>}}{*e_alpha*}}.
-//' @return A numeric matrix with 2 columns: lower limit and upper limit.
-//' @details
-//' The equal-precision critical value \ifelse{latex}{\out{$\mathit{e}_{\mathit{\alpha}}$}}{\ifelse{html}{\out{<i>e</i><sub><i>&alpha;</i></sub>}}{*e_alpha*}} is calculated using Borokov–Sycheva
-//' approximation² (`WH_e_alpha()`). This method aligns more closely with
-//' Monte Carlo simulations using 100,000 variance-stabilized Brownian bridge
-//' discretization steps and 100,000 replicates (`WH_e_alpha_MC()`) compared to
-//' the pre-computed tables published in Klein and Moeschberger (2003)³.
-//' @references
-//' 1. Nair, V.N., 1984. Conﬁdence bands for survival functions with censored
-//' data: a comparative study. *Technometrics*, 26, pp. 265–275.
-//' 2. Borokov, A.A. and Sycheva, N.M., 1968. On asymptotically optimal
-//' non-parametric criteria. *Theory of Probability & Its Applications*, 13(3),
-//' pp. 359–393.
-//' 3. Klein, J.P. and Moeschberger, M.L., 2003. Appendix C: Statistical Tables.
-//' In *Survival Analysis: Techniques for Censored and Truncated Data*, pp.
-//' 455–482. New York: Springer New York.
-//' @export
-// [[Rcpp::export]]
-Eigen::MatrixXd WH_Nair(const Eigen::VectorXd& time, const Eigen::VectorXd& surv,
-                        const Eigen::VectorXd& SE, const Eigen::VectorXi& risk,
-                        const Eigen::VectorXi& event, double alpha = 0.05,
-                        bool verbose = true, double tol = 1e-10, int maxit = 10000,
-                        bool adapt = true, int MC_step = 1e5, int MC_rep = 1e5,
-                        int MC_seed = 24601, double e_alpha_override = 0.0) {
-  if ((event.array() == 0).any()) {
-    throw std::invalid_argument("[WH_Nair] inputs must be at event-time steps, not all-time steps");
-  }
-  int n_step = surv.size();
-  int i_first = 0;
-  while (i_first < n_step && (SE(i_first) == 0.0 || std::isnan(SE(i_first)))) ++i_first;
-  int i_last = n_step - 1;
-  while (i_last > i_first && (SE(i_last) == 0.0 || std::isnan(SE(i_last)))) --i_last;
-  // double S_first = surv(i_first);
-  // double S_last = surv(i_last);
-  double n = risk[0];
-  Eigen::VectorXd variance = (SE.array() / surv.array()).square();
-  double variance_lower = variance(i_first);
-  double variance_upper = variance(i_last);
-  double lower = n * variance_lower / (1.0 + n * variance_lower);
-  double upper = n * variance_upper / (1.0 + n * variance_upper);
-  double e;
-  if (e_alpha_override != 0.0) {
-    e = e_alpha_override;
-  } else {
-    if (verbose) Rcpp::Rcout << "[WH_Nair] i = " << i_first << ":" << i_last << " of " << n_step - 1 << ", lower = " << lower << ", upper = " << upper << std::endl;
-    if (adapt) {
-      try {
-        e = WH_e_alpha(lower, upper, alpha, tol, maxit);
-      } catch (const std::exception&) {
-        if (verbose) Rcpp::Rcout << "[WH_Nair] Monte Carlo fallback" << std::endl;
-        e = WH_e_alpha_MC(lower, upper, alpha, MC_step, MC_rep, MC_seed);
-      }
-    } else {
-      e = WH_e_alpha(lower, upper, alpha, tol, maxit);
-    }
-  }
-  Eigen::VectorXd D = ((e * variance.array().sqrt()) / surv.array().log()).exp();
-  Eigen::MatrixXd output(surv.size(), 2);
-  output.col(0) = surv.array().pow(1.0 / D.array());
-  output.col(1) = surv.array().pow(D.array());
-  return output;
-}
-
-//' Rothman confidence intervals
-//'
-//' Computes Rothman binomial pointwise confidence intervals¹ for the
-//' Kaplan–Meier survival estimator at each unique event time.
-//' @param surv Numeric vector of Kaplan–Meier survival probabilities.
-//' @param risk Integer vector of numbers at risk at each change in `surv`.
-//' @param event Integer vector of event counts at each change in `surv`.
-//' @param alpha Optional significance level. Default = `0.05`.
-//' @return A numeric matrix with 2 columns: lower limit and upper limit.
-//' @references
-//' 1. Rothman, K.J., 1978. Estimation of confidence limits for the cumulative
-//' probability of survival in life table analysis. *Journal of Chronic Diseases*,
-//' 31(8), pp. 557–560.
-//' @export
-// [[Rcpp::export]]
-Eigen::MatrixXd WH_Rothman(const Eigen::VectorXd& surv,
-                           const Eigen::VectorXi& risk,
-                           const Eigen::VectorXi& event,
-                           double alpha = 0.05) {
-  int n = surv.size();
-  double Z = WH_qstdnorm(1.0 - 0.5 * alpha);
-  double Z2 = Z * Z;
-  Eigen::VectorXd risk_d = risk.cast<double>();
-  Eigen::VectorXd event_d = event.cast<double>();
-  Eigen::VectorXd Greenwood = event_d.array() / (risk_d.array() * (risk_d.array() - event_d.array()));
-  Eigen::VectorXd Greenwood_cumsum = Greenwood;
-  for (int i = 1; i < n; ++i) Greenwood_cumsum(i) += Greenwood_cumsum(i - 1);
-  Eigen::VectorXd variance = Greenwood_cumsum.array() * surv.array().square();
-  Eigen::VectorXd n_null = surv.array() * (1.0 - surv.array()) / variance.array();
-  Eigen::VectorXd term = Z2 / (4.0 * n_null.array().square());
-  Eigen::VectorXd root = (variance.array() + term.array()).sqrt();
-  Eigen::VectorXd scale = n_null.array() / (n_null.array() + Z2);
-  Eigen::VectorXd upper = scale.array() * (surv.array() + Z2 / (2.0 * n_null.array()) + Z * root.array());
-  Eigen::VectorXd lower = scale.array() * (surv.array() + Z2 / (2.0 * n_null.array()) - Z * root.array());
-  // for (int i = 0; i < n; ++i) {
-  //   if (std::isnan(upper(i))) upper(i) = 1.0;
-  //   if (std::isnan(lower(i))) lower(i) = 1.0;
-  // }
-  Eigen::MatrixXd output(n, 2);
-  output.col(0) = lower;
-  output.col(1) = upper;
-  return output;
-}
+// TIER 1 //////////////////////////////////////////////////////////////////////
 
 //' Thomas–Grunkemeier confidence intervals
 //'
@@ -214,7 +237,7 @@ Eigen::MatrixXd WH_Rothman(const Eigen::VectorXd& surv,
 //' @param risk Integer vector of numbers at risk at each `time`.
 //' @param event Integer vector of numbers of events at each `time`.
 //' @param alpha Optional significance level. Default = `0.05`.
-//' @return A numeric matrix with 2 columns: lower limit and upper limit.
+//' @return A numeric matrix with 3 columns: time, lower limit, and upper limit.
 //' @references
 //' 1. Thomas, D.R. and Grunkemeier, G.L., 1975. Confidence interval estimation
 //' of survival probabilities for censored data. *Journal of the American
@@ -225,27 +248,31 @@ Eigen::MatrixXd WH_ThomasGrunkemeier(const Eigen::VectorXd& time,
                                      const Eigen::VectorXi& risk,
                                      const Eigen::VectorXi& event,
                                      double alpha = 0.05) {
+  if ((event.array() == 0).any()) {
+    throw std::invalid_argument("[WH_ThomasGrunkemeier] inputs must be at event-time steps, not all-time steps");
+  }
   int n = time.size();
   Eigen::MatrixXd X = WH_KMexpand(time, risk, event);
   Eigen::VectorXd X_time = X.col(0);
   Eigen::VectorXi X_status = X.col(1).cast<int>();
   int m = 0;
   for (int i = 0; i < n; ++i) if (event(i) > 0) ++m;
-  Eigen::MatrixXd output = Eigen::MatrixXd::Constant(m, 2, std::numeric_limits<double>::quiet_NaN());
+  Eigen::MatrixXd output = Eigen::MatrixXd::Constant(m, 3, std::numeric_limits<double>::quiet_NaN());
   int j = 0;
   for (int i = 0; i < n; ++i) {
     if (event(i) == 0) continue;
     if (event(i) != risk(i)) {
       Eigen::VectorXd CI = WH_ThomasGrunkemeier_CI(X_time, X_status, time(i), alpha);
-      output(j, 0) = CI(0);
-      output(j, 1) = CI(1);
+      output(j, 1) = CI(0);
+      output(j, 2) = CI(1);
     }
     ++j;
   }
+  output.col(0) = time;
   return output;
 }
 
-////////////////////////////////////////////////////////////////////////////////
+// TIER 2 //////////////////////////////////////////////////////////////////////
 
 //' Hollander–McKeague confidence bands
 //'
@@ -272,7 +299,7 @@ Eigen::MatrixXd WH_ThomasGrunkemeier(const Eigen::VectorXd& time,
 //' @param maxit_K Optional maximum number of iterations for the bisection
 //' root-finding of the Hall–Wellner quantile function *K*(*x*, *a*). Default =
 //' `10000`.
-//' @return A numeric matrix with 2 columns: lower limit and upper limit.
+//' @return A numeric matrix with 2 columns: time, lower limit, and upper limit.
 //' @details
 //' The Hollander–McKeague procedure begins with a specified *simultaneous* \ifelse{latex}{\out{$\mathit{\alpha}$}}{\ifelse{html}{\out{<i>&alpha;</i>}}{*alpha*}} and
 //' computes a smaller *pointwise* \ifelse{latex}{\out{$\mathit{\alpha}_{\mathit{p}}$}}{\ifelse{html}{\out{<i>&alpha;</i><sub><i>p</i></sub>}}{*alpha_p*}} such that the resulting *pointwise* confidence

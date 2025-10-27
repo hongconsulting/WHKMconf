@@ -52,7 +52,7 @@ root-finding of the Hall–Wellner quantile function \emph{K}(\emph{x}, \emph{a}
 \code{10000}.}
 }
 \value{
-A numeric matrix with 2 columns: lower limit and upper limit.
+A numeric matrix with 2 columns: time, lower limit, and upper limit.
 }
 \description{
 Computes the Hollander–McKeague likelihood-ratio simultaneous confidence

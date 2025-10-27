@@ -11,6 +11,17 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// WH_KMconf_med
+Eigen::VectorXd WH_KMconf_med(const Eigen::MatrixXd& input);
+RcppExport SEXP _WHKMconf_WH_KMconf_med(SEXP inputSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type input(inputSEXP);
+    rcpp_result_gen = Rcpp::wrap(WH_KMconf_med(input));
+    return rcpp_result_gen;
+END_RCPP
+}
 // WH_Nair
 Eigen::MatrixXd WH_Nair(const Eigen::VectorXd& time, const Eigen::VectorXd& surv, const Eigen::VectorXd& SE, const Eigen::VectorXi& risk, const Eigen::VectorXi& event, double alpha, bool verbose, double tol, int maxit, bool adapt, int MC_step, int MC_rep, int MC_seed, double e_alpha_override);
 RcppExport SEXP _WHKMconf_WH_Nair(SEXP timeSEXP, SEXP survSEXP, SEXP SESEXP, SEXP riskSEXP, SEXP eventSEXP, SEXP alphaSEXP, SEXP verboseSEXP, SEXP tolSEXP, SEXP maxitSEXP, SEXP adaptSEXP, SEXP MC_stepSEXP, SEXP MC_repSEXP, SEXP MC_seedSEXP, SEXP e_alpha_overrideSEXP) {
@@ -36,16 +47,17 @@ BEGIN_RCPP
 END_RCPP
 }
 // WH_Rothman
-Eigen::MatrixXd WH_Rothman(const Eigen::VectorXd& surv, const Eigen::VectorXi& risk, const Eigen::VectorXi& event, double alpha);
-RcppExport SEXP _WHKMconf_WH_Rothman(SEXP survSEXP, SEXP riskSEXP, SEXP eventSEXP, SEXP alphaSEXP) {
+Eigen::MatrixXd WH_Rothman(const Eigen::VectorXd& time, const Eigen::VectorXd& surv, const Eigen::VectorXi& risk, const Eigen::VectorXi& event, double alpha);
+RcppExport SEXP _WHKMconf_WH_Rothman(SEXP timeSEXP, SEXP survSEXP, SEXP riskSEXP, SEXP eventSEXP, SEXP alphaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type time(timeSEXP);
     Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type surv(survSEXP);
     Rcpp::traits::input_parameter< const Eigen::VectorXi& >::type risk(riskSEXP);
     Rcpp::traits::input_parameter< const Eigen::VectorXi& >::type event(eventSEXP);
     Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
-    rcpp_result_gen = Rcpp::wrap(WH_Rothman(surv, risk, event, alpha));
+    rcpp_result_gen = Rcpp::wrap(WH_Rothman(time, surv, risk, event, alpha));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -136,8 +148,9 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_WHKMconf_WH_KMconf_med", (DL_FUNC) &_WHKMconf_WH_KMconf_med, 1},
     {"_WHKMconf_WH_Nair", (DL_FUNC) &_WHKMconf_WH_Nair, 14},
-    {"_WHKMconf_WH_Rothman", (DL_FUNC) &_WHKMconf_WH_Rothman, 4},
+    {"_WHKMconf_WH_Rothman", (DL_FUNC) &_WHKMconf_WH_Rothman, 5},
     {"_WHKMconf_WH_ThomasGrunkemeier", (DL_FUNC) &_WHKMconf_WH_ThomasGrunkemeier, 4},
     {"_WHKMconf_WH_HollanderMcKeague", (DL_FUNC) &_WHKMconf_WH_HollanderMcKeague, 11},
     {"_WHKMconf_WH_HollanderMcKeague_alpha", (DL_FUNC) &_WHKMconf_WH_HollanderMcKeague_alpha, 9},

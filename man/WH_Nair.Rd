@@ -60,7 +60,7 @@ Default = \code{1e5}.}
 \ifelse{latex}{\out{$\mathit{e}_{\mathit{\alpha}}$}}{\ifelse{html}{\out{<i>e</i><sub><i>&alpha;</i></sub>}}{*e_alpha*}}.}
 }
 \value{
-A numeric matrix with 2 columns: lower limit and upper limit.
+A numeric matrix with 3 columns: time, lower limit, and upper limit.
 }
 \description{
 Computes the Nair's log-transformed equal-precision simultaneous confidence

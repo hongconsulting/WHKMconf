@@ -44,14 +44,14 @@ data <- data.frame("time" = survival::ovarian$futime, "status" = survival::ovari
 fit <- survival::survfit(survival::Surv(time * 12 / 365.2425, status) ~ 1, data = data)
 s <- summary(fit)
 
-CI <- data.frame("time" = s$time, "surv" = s$surv, "SE" = s$std.err)
-CI.R <- data.frame(WH_Rothman(s$surv, s$n.risk, s$n.event))
+CI <- data.frame("time" = s$time, "surv" = s$surv)
+CI.R <- data.frame(WH_Rothman(s$time, s$surv, s$n.risk, s$n.event)[, 2:3])
 CI <- cbind(CI, setNames(CI.R, c("Rl", "Ru")))
-CI.TG <- data.frame(WH_ThomasGrunkemeier(s$time, s$n.risk, s$n.event))
+CI.TG <- data.frame(WH_ThomasGrunkemeier(s$time, s$n.risk, s$n.event)[, 2:3])
 CI <- cbind(CI, setNames(CI.TG, c("TGl", "TGu")))
-CI.N <- data.frame(WH_Nair(s$time, s$surv, s$std.err, s$n.risk, s$n.event))
+CI.N <- data.frame(WH_Nair(s$time, s$surv, s$std.err, s$n.risk, s$n.event)[, 2:3])
 CI <- cbind(CI, setNames(CI.N, c("Nl", "Nu")))
-CI.HM <- data.frame(WH_HollanderMcKeague(s$time, s$n.risk, s$n.event))
+CI.HM <- data.frame(WH_HollanderMcKeague(s$time, s$n.risk, s$n.event)[, 2:3])
 CI <- cbind(CI, setNames(CI.HM, c("HMl", "HMu")))
 
 t_max <- max(data$time * 12/365.2425)
@@ -82,10 +82,11 @@ legend(legend = c("Rothman", "Thomas\u2013Grunkemeier", "Nair", "Hollander\u2013
 ## Further Reading
 
 1. Borokov, A.A. and Sycheva, N.M., 1968. On asymptotically optimal non-parametric criteria. *Theory of Probability & Its Applications*, 13(3), pp. 359–393.
-2. Hall, W.J. and Wellner, J.A., 1980. Confidence bands for a survival curve from censored data. *Biometrika*, 67(1), pp. 133–143.
-3. Hollander, M. and McKeague, I.W., 1997. Likelihood ratio-based confidence bands for survival functions. *Journal of the American Statistical Association*, 92(437), pp. 215–226.
-4. Klein, J.P. and Moeschberger, M.L., 2003. Appendix C: Statistical Tables. In *Survival Analysis: Techniques for Censored and Truncated Data*, pp. 455–482. New York: Springer New York.
-5. Nair, V.N., 1984. Conﬁdence bands for survival functions with censored data: a comparative study. *Technometrics*, 26, pp. 265–275.
-6. Rothman, K.J., 1978. Estimation of confidence limits for the cumulative probability of survival in life table analysis. *Journal of Chronic Diseases*, 31(8), pp. 557–560.
-7. Sachs, M.C., Brand, A. and Gabriel, E.E., 2022. Confidence bands in survival analysis. *British Journal of Cancer*, 127(9), pp. 1636–1641.
-8. Thomas, D.R. and Grunkemeier, G.L., 1975. Confidence interval estimation of survival probabilities for censored data. *Journal of the American Statistical Association*, 70(352), pp. 865–871.
+2. Brookmeyer, R. and Crowley, J., 1982. A confidence interval for the median survival time. *Biometrics*, pp. 29–41.
+3. Hall, W.J. and Wellner, J.A., 1980. Confidence bands for a survival curve from censored data. *Biometrika*, 67(1), pp. 133–143.
+4. Hollander, M. and McKeague, I.W., 1997. Likelihood ratio-based confidence bands for survival functions. *Journal of the American Statistical Association*, 92(437), pp. 215–226.
+5. Klein, J.P. and Moeschberger, M.L., 2003. Appendix C: Statistical Tables. In *Survival Analysis: Techniques for Censored and Truncated Data*, pp. 455–482. New York: Springer New York.
+6. Nair, V.N., 1984. Conﬁdence bands for survival functions with censored data: a comparative study. *Technometrics*, 26, pp. 265–275.
+7. Rothman, K.J., 1978. Estimation of confidence limits for the cumulative probability of survival in life table analysis. *Journal of Chronic Diseases*, 31(8), pp. 557–560.
+8. Sachs, M.C., Brand, A. and Gabriel, E.E., 2022. Confidence bands in survival analysis. *British Journal of Cancer*, 127(9), pp. 1636–1641.
+9. Thomas, D.R. and Grunkemeier, G.L., 1975. Confidence interval estimation of survival probabilities for censored data. *Journal of the American Statistical Association*, 70(352), pp. 865–871.

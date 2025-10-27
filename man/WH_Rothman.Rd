@@ -4,19 +4,21 @@
 \alias{WH_Rothman}
 \title{Rothman confidence intervals}
 \usage{
-WH_Rothman(surv, risk, event, alpha = 0.05)
+WH_Rothman(time, surv, risk, event, alpha = 0.05)
 }
 \arguments{
-\item{surv}{Numeric vector of Kaplan–Meier survival probabilities.}
+\item{time}{Numeric vector of unique event times.}
 
-\item{risk}{Integer vector of numbers at risk at each change in \code{surv}.}
+\item{surv}{Numeric vector of Kaplan–Meier survival estimates at each \code{time}.}
 
-\item{event}{Integer vector of event counts at each change in \code{surv}.}
+\item{risk}{Integer vector of numbers at risk at each \code{time}.}
+
+\item{event}{Integer vector of numbers of events at each \code{time}.}
 
 \item{alpha}{Optional significance level. Default = \code{0.05}.}
 }
 \value{
-A numeric matrix with 2 columns: lower limit and upper limit.
+A numeric matrix with 3 columns: time, lower limit, and upper limit.
 }
 \description{
 Computes Rothman binomial pointwise confidence intervals¹ for the
